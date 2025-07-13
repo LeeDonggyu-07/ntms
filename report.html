@@ -81,6 +81,44 @@
         .code-accordion-content code {
             white-space: pre; /* Preserve whitespace and line breaks */
         }
+
+        /* Scroll-to-top button styles */
+        #scrollToTopBtn {
+            display: none; /* Hidden by default */
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Place the button at the bottom of the page */
+            right: 20px; /* Place the button at the right of the page */
+            z-index: 99; /* Make sure it does not overlap */
+            border: none; /* Remove borders */
+            outline: none; /* Remove outline */
+            background-color: #2563eb; /* Blue background */
+            color: white; /* White text */
+            cursor: pointer; /* Add a mouse pointer on hover */
+            padding: 15px; /* Some padding */
+            border-radius: 50%; /* Rounded corners */
+            font-size: 18px; /* Increase font size */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #1d4ed8; /* Darker blue on hover */
+        }
+
+        /* CSS for the arrow icon */
+        #scrollToTopBtn::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(-2px); /* Adjust position */
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -101,7 +139,7 @@
     3.  **Section 1 (개요):** Introduces the 'why'—the shift from tariffs to NTMs—using simple visuals and interactive definitions. Also covers the theoretical background of neo-protectionism and NTMs.
     4.  **Section 2 (연구 방법론 및 한국 현황):** Explains the Python-based data analysis methodology and presents Korea's NTM landscape through key metrics, detailed textual analysis, and interactive charts, allowing users to grasp the core statistics at a glance.
     5.  **Section 3 (국제 비교):** Uses a filterable bar chart to facilitate direct comparison between Korea and RCEP nations, supplemented by detailed textual analysis of NTM types and item groups.
-    6.  **Section 4 (해외 대응 사례):** Explores how major countries respond to NTMs, including specific disputes, WTO and FTA mechanisms, and the challenges of digital trade.
+    6.  **Section 4 (해외 대응 사례)::** Explores how major countries respond to NTMs, including specific disputes, WTO and FTA mechanisms, and the challenges of digital trade.
     7.  **Section 5 (정책 제언):** Organizes complex recommendations into a clear, three-pillar structure (Domestic, International, Digital) for easy digestion, with expanded textual explanations.
     This user-centric flow ensures that complex information is progressively disclosed, making the report's insights more accessible and memorable than a static document.
     -->
@@ -119,7 +157,9 @@
 
     <!-- Hamburger Icon (visible on small screens) -->
     <button id="menu-toggle" class="fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg md:hidden">
-        ☰
+        <span class="block w-6 h-0.5 bg-white mb-1"></span>
+        <span class="block w-6 h-0.5 bg-white mb-1"></span>
+        <span class="block w-6 h-0.5 bg-white"></span>
     </button>
 
     <!-- Slide-out Sidebar -->
@@ -143,7 +183,7 @@
     <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- Title -->
-            <h1 class="flex-grow text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap text-center md:text-left md:text-xl">
+            <h1 id="main-header-title" class="flex-grow text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap text-center md:text-left md:text-xl md:flex-grow-0 cursor-pointer">
                 비관세조치의 영향과 대응
             </h1>
             <!-- Horizontal Navigation (hidden on mobile, visible on desktop) -->
@@ -685,76 +725,6 @@ def create_ntm_dashboard_data(df):
     
     return dashboard_data
 
-# Main execution script
-if __name__ == "__main__":
-    print("UNCTAD NTM Data Access and Processing")
-    print("=" * 50)
-    
-    # Step 1: Set up data downloader
-    downloader = UNCTADDataDownloader()
-    
-    # Step 2: Create manual download instructions
-    print("\n1. Creating manual download instructions...")
-    downloader.create_manual_download_script()
-    
-    # Step 3: Example of automated download (if APIs are available)
-    print("\n2. Attempting automated downloads...")
-    try:
-        # Note: These may not work with actual APIs without proper authentication
-        ntm_data = downloader.download_ntm_data_wits('KOR', years=[2020, 2021, 2022])
-        trade_data = downloader.download_trade_data_unctad('KOR', years=[2020, 2021, 2022])
-        
-        if not ntm_data.empty:
-            print(f"Downloaded {len(ntm_data)} NTM records")
-            ntm_data.to_csv('korea_ntm_automated.csv', index=False)
-        
-        if not trade_data.empty:
-            print(f"Downloaded {len(trade_data)} trade records")
-            trade_data.to_csv('korea_trade_automated.csv', index=False)
-            
-    except Exception as e:
-        print(f"Automated download failed: {str(e)}")
-        print("Please use manual download methods instead.")
-    
-    # Step 4: Integration example
-    print("\n3. Data integration example...")
-    datasets = integrate_unctad_data()
-    
-    # Step 5: Analysis preparation
-    print("\n4. Preparing for analysis...")
-    
-    # If you have actual data files, process them
-    sample_data_structure = {
-        'country_code': ['KOR'] * 100,
-        'year': [2020, 2021, 2022, 2023, 2024] * 20,
-        'product_code': ['8471', '8517', '9001', '3004', '8703'] * 20,
-        'ntm_code': ['A14', 'B42', 'A22', 'B84', 'A31'] * 20,
-        'ntm_description': ['SPS Certificate Required'] * 100,
-        'agency': ['Ministry of Food and Drug Safety'] * 100,
-        'sector': ['Electronics', 'Telecommunications', 'Optical', 'Pharmaceuticals', 'Automotive'] * 20
-    }
-    
-    sample_df = pd.DataFrame(sample_data_structure)
-    processed_sample = process_unctad_csv(sample_df)
-    
-    # Calculate indicators
-    indicators = calculate_ntm_indicators(processed_sample)
-    dashboard_data = create_ntm_dashboard_data(processed_sample)
-    
-    print("\nSample indicators calculated:")
-    for key, value in indicators.items():
-        if isinstance(value, dict):
-            print(f"  {key}: {len(value)} categories")
-        else:
-            print(f"  {key}: {value}")
-    
-    print("\nData processing complete!")
-    print("Next steps:")
-    print("1. Download actual data using manual instructions")
-    print("2. Place CSV files in the same directory")
-    print("3. Run the main analyzer with real data")
-    print("4. Generate comprehensive policy recommendations")
-
 # Additional utility functions for specific UNCTAD data formats
 def parse_trains_xml(xml_file):
     """
@@ -1001,6 +971,9 @@ def create_data_quality_report(df):
         </div>
     </div>
 
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" title="맨 위로 이동"></button>
+
     <script>
         // Predefined term definitions
         const termDefinitions = {
@@ -1026,6 +999,40 @@ def create_data_quality_report(df):
             const sections = document.querySelectorAll('main section');
             const navLinks = document.querySelectorAll('.nav-link');
 
+            // Sidebar elements
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const closeSidebar = document.getElementById('close-sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                sidebarOverlay.classList.remove('hidden');
+            }
+
+            function closeSidebarFn() {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            }
+
+            // Event listeners for sidebar toggle
+            if (menuToggle) { // Check if element exists (it's hidden on desktop)
+                menuToggle.addEventListener('click', openSidebar);
+            }
+            if (closeSidebar) {
+                closeSidebar.addEventListener('click', closeSidebarFn);
+            }
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebarFn);
+            }
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', closeSidebarFn);
+            });
+
+
             function updateActiveLink() {
                 let current = '';
                 sections.forEach(section => {
@@ -1041,6 +1048,13 @@ def create_data_quality_report(df):
                         link.classList.add('active');
                     }
                 });
+                // Update sidebar nav links as well
+                sidebarNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
             }
 
             window.addEventListener('scroll', updateActiveLink);
@@ -1048,21 +1062,26 @@ def create_data_quality_report(df):
 
             // Accordion for UNCTAD NTM Classification
             const ntmAccordionButton = document.querySelector('#ntm-accordion button');
-            ntmAccordionButton.addEventListener('click', () => {
-                const content = ntmAccordionButton.nextElementSibling;
-                const icon = ntmAccordionButton.querySelector('span:last-child');
-                content.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-            });
+            if (ntmAccordionButton) {
+                ntmAccordionButton.addEventListener('click', () => {
+                    const content = ntmAccordionButton.nextElementSibling;
+                    const icon = ntmAccordionButton.querySelector('span:last-child');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            }
+
 
             // Accordion for Python Code
             const pythonCodeAccordionButton = document.querySelector('#python-code-accordion button');
-            pythonCodeAccordionButton.addEventListener('click', () => {
-                const content = pythonCodeAccordionButton.nextElementSibling;
-                const icon = pythonCodeAccordionButton.querySelector('span:last-child');
-                content.classList.toggle('hidden');
-                icon.classList.toggle('rotate-180');
-            });
+            if (pythonCodeAccordionButton) {
+                pythonCodeAccordionButton.addEventListener('click', () => {
+                    const content = pythonCodeAccordionButton.nextElementSibling;
+                    const icon = pythonCodeAccordionButton.querySelector('span:last-child');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            }
 
 
             const ntmTypeCtx = document.getElementById('ntmTypeChart').getContext('2d');
@@ -1283,6 +1302,27 @@ def create_data_quality_report(df):
                 if (e.target === infoModal) {
                     infoModal.classList.add('hidden');
                 }
+            });
+
+            // Scroll to Top Button functionality
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            const mainHeaderTitle = document.getElementById('main-header-title'); // Get the main header title
+
+            window.onscroll = function() {
+                if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                    scrollToTopBtn.style.display = "block";
+                } else {
+                    scrollToTopBtn.style.display = "none";
+                }
+            };
+
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Add click event to main header title
+            mainHeaderTitle.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>
