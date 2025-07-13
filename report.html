@@ -117,14 +117,37 @@
     
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
+    <!-- Hamburger Icon (visible on small screens) -->
+    <button id="menu-toggle" class="fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg md:hidden">
+        ☰
+    </button>
+
+    <!-- Slide-out Sidebar -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-40 p-6 flex flex-col">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-bold text-blue-300">메뉴</h2>
+            <button id="close-sidebar" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+        </div>
+        <nav class="flex flex-col space-y-4">
+            <a href="#overview" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">개요 및 이론</a>
+            <a href="#korea-analysis" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">한국 현황 분석</a>
+            <a href="#comparison" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">국제 비교</a>
+            <a href="#international-response" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">해외 대응 사례</a>
+            <a href="#policy" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">정책 제언</a>
+        </nav>
+    </aside>
+
+    <!-- Overlay for when sidebar is open -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
+
     <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex-shrink-0">
-                <h1 class="text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap">
-                    비관세조치의 영향과 대응
-                </h1>
-            </div>
-            <div class="flex items-baseline space-x-4">
+            <!-- Title -->
+            <h1 class="flex-grow text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap text-center md:text-left md:text-xl">
+                비관세조치의 영향과 대응
+            </h1>
+            <!-- Horizontal Navigation (hidden on mobile, visible on desktop) -->
+            <div class="hidden md:flex items-baseline space-x-4">
                 <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-100">개요 및 이론</a>
                 <a href="#korea-analysis" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-100">한국 현황 분석</a>
                 <a href="#comparison" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-100">국제 비교</a>
@@ -151,7 +174,6 @@
                     <p class="text-base font-medium text-gray-500 mt-2">비관세조치 영향권</p>
                 </div>
             </div>
-            
             <p class="mt-8 text-center text-sm text-gray-500">✨ 밑줄이 있는 용어를 클릭하면 상세 설명을 볼 수 있습니다.</p>
         </section>
 
@@ -957,14 +979,14 @@ def create_data_quality_report(df):
     </main>
 
     <footer class="bg-gray-800 text-white">
-        <div class="mt-8">
-                <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-md">
-                    보고서 원본 보기
-                </a>
-          </div>
         <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 LeeDonggyu. All Rights Reserved.</p>
             <p class="mt-2 opacity-70">본 보고서는 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> TRAINS 데이터베이스를 기반으로 제작되었습니다.</p>
+            <div class="mt-4">
+                <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
+                    보고서 원본 보기
+                </a>
+            </div>
         </div>
     </footer>
 
