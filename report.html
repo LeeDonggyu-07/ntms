@@ -122,6 +122,11 @@
                     <p class="text-base font-medium text-gray-500 mt-2">비관세조치 영향권</p>
                 </div>
             </div>
+            <div class="mt-8">
+                <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-md">
+                    보고서 원본 보기
+                </a>
+            </div>
         </section>
 
         <section id="overview" class="py-16 md:py-20 border-t">
@@ -518,7 +523,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.dataset.label}: ${context.raw}%`;
+                                    return `${context.label}: ${context.raw}%`;
                                 }
                             }
                         }
