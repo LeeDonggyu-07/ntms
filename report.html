@@ -156,11 +156,7 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <!-- Hamburger Icon (visible on small screens) -->
-    <button id="menu-toggle" class="fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg md:hidden">
-        <span class="block w-6 h-0.5 bg-white mb-1"></span>
-        <span class="block w-6 h-0.5 bg-white mb-1"></span>
-        <span class="block w-6 h-0.5 bg-white"></span>
-    </button>
+    <!-- Positioned within the header nav for better layout control -->
 
     <!-- Slide-out Sidebar -->
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-40 p-6 flex flex-col">
@@ -182,8 +178,14 @@
 
     <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm">
         <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Hamburger Icon (visible on small screens) -->
+            <button id="menu-toggle" class="p-2 rounded-full md:hidden flex-shrink-0">
+                <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
+                <span class="block w-6 h-0.5 bg-gray-600"></span>
+            </button>
             <!-- Title -->
-            <h1 id="main-header-title" class="flex-grow text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap text-center md:text-left md:text-xl md:flex-grow-0 cursor-pointer">
+            <h1 id="main-header-title" class="flex-grow text-base sm:text-lg font-bold text-blue-600 whitespace-nowrap text-center cursor-pointer md:text-left md:text-xl md:flex-grow-0">
                 비관세조치의 영향과 대응
             </h1>
             <!-- Horizontal Navigation (hidden on mobile, visible on desktop) -->
@@ -777,7 +779,7 @@ def create_data_quality_report(df):
     
     print("Data quality report saved to data_quality_report.json")
     return quality_report
-</code></pre>
+```</pre>
                         </div>
                     </div>
                 </div>
@@ -953,7 +955,7 @@ def create_data_quality_report(df):
             <p>&copy; 2025 LeeDonggyu. All Rights Reserved.</p>
             <p class="mt-2 opacity-70">본 보고서는 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> TRAINS 데이터베이스를 기반으로 제작되었습니다.</p>
             <div class="mt-4">
-                <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
+                <a href="[https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link](https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link)" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
                     보고서 원본 보기
                 </a>
             </div>
