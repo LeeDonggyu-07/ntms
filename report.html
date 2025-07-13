@@ -62,6 +62,25 @@
             text-decoration: underline;
             color: #2563eb; /* Subtle hover effect */
         }
+        /* Style for the code block */
+        .code-accordion-content {
+            background-color: #f8f8f8; /* Light grey background for code */
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.25;
+            color: #333; /* Darker text for code */
+        }
+        .code-accordion-content pre {
+            margin: 0;
+            padding: 0;
+        }
+        .code-accordion-content code {
+            white-space: pre; /* Preserve whitespace and line breaks */
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -222,6 +241,557 @@
                         <li class="list-item-card"><strong>세부 현황 집계:</strong> <strong>비관세조치</strong> 세부 유형별 현황과 소관 부처별 현황을 집계하여 한국 <strong>비관세조치</strong>의 세부적인 특징과 정책적 주체를 파악한다.</li>
                     </ul>
                     <p class="text-gray-600 mt-4">본 연구는 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터를 직접 Python 코드를 통해 분석한 결과를 제시한다. Python 분석 과정은 이러한 결과의 도출 과정을 체계화하고 재현 가능성을 높이는 방법론적 기반을 제공한다.</p>
+
+                    <!-- Python Code Dropdown -->
+                    <div id="python-code-accordion" class="bg-gray-100 p-4 rounded-xl shadow-inner border border-gray-200 mt-8">
+                        <button class="w-full text-left font-bold text-lg text-gray-800 flex justify-between items-center">
+                            <span>사용된 Python 코드 보기</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="code-accordion-content hidden mt-4">
+<pre><code>
+import pandas as pd
+import requests
+import json
+import time
+from urllib.parse import urlencode
+import os
+
+class UNCTADDataDownloader:
+    """
+    Class to download UNCTAD data from various sources including WITS API
+    """
+    
+    def __init__(self):
+        self.base_urls = {
+            'wits': 'https://wits.worldbank.org/API/V1/SDMX/V21/rest/data',
+            'unctad_stat': 'https://unctadstat.unctad.org/wds/api/v1/rest/data',
+            'trains': 'https://trainsonline.unctad.org/api'
+        }
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
+    
+    def download_ntm_data_wits(self, country_code='KOR', years=None, product_codes=None):
+        """
+        Download NTM data from World Bank WITS API
+        
+        Parameters:
+        - country_code: ISO country code (default: 'KOR' for South Korea)
+        - years: List of years to download (default: 2015-2024)
+        - product_codes: List of HS product codes (default: all)
+        """
+        if years is None:
+            years = list(range(2015, 2025))
+        
+        print(f"Downloading NTM data for {country_code} from WITS API...")
+        
+        ntm_data = []
+        
+        for year in years:
+            try:
+                # WITS API endpoint for NTM data
+                params = {
+                    'reporter': country_code,
+                    'year': year,
+                    'format': 'json'
+                }
+                
+                # Note: This is a simplified example. The actual WITS API structure may vary
+                url = f"{self.base_urls['wits']}/NTM/{urlencode(params)}"
+                
+                response = self.session.get(url, timeout=30)
+                if response.status_code == 200:
+                    data = response.json()
+                    # Process the JSON response based on actual API structure
+                    if 'data' in data:
+                        for record in data['data']:
+                            ntm_data.append({
+                                'year': year,
+                                'country': country_code,
+                                'product_code': record.get('product_code', ''),
+                                'ntm_code': record.get('ntm_code', ''),
+                                'ntm_description': record.get('description', ''),
+                                'measure_type': record.get('measure_type', ''),
+                                'agency': record.get('agency', ''),
+                                'legal_basis': record.get('legal_basis', '')
+                            })
+                    
+                    print(f"Downloaded data for {year}: {len(data.get('data', []))} records")
+                    
+                else:
+                    print(f"Failed to download data for {year}: HTTP {response.status_code}")
+                
+                # Rate limiting
+                time.sleep(1)
+                
+            except Exception as e:
+                print(f"Error downloading data for {year}: {str(e)}")
+                continue
+        
+        return pd.DataFrame(ntm_data)
+    
+    def download_trade_data_unctad(self, country_code='KOR', years=None):
+        """
+        Download trade statistics from UNCTAD Stat API
+        """
+        if years is None:
+            years = list(range(2015, 2025))
+        
+        print(f"Downloading trade data for {country_code} from UNCTAD Stat...")
+        
+        trade_data = []
+        
+        for year in years:
+            try:
+                # UNCTAD Stat API parameters
+                params = {
+                    'economy': country_code,
+                    'year': year,
+                    'indicator': 'GOODS_EXPORTS,GOODS_IMPORTS',
+                    'format': 'json'
+                }
+                
+                # Note: This is a conceptual example. Actual API structure may differ
+                url = f"{self.base_urls['unctad_stat']}/trade?{urlencode(params)}"
+                
+                response = self.session.get(url, timeout=30)
+                if response.status_code == 200:
+                    data = response.json()
+                    # Process based on actual API structure
+                    print(f"Downloaded trade data for {year}")
+                    
+                time.sleep(1)
+                
+            except Exception as e:
+                print(f"Error downloading trade data for {year}: {str(e)}")
+                continue
+        
+        return pd.DataFrame(trade_data)
+    
+    def download_csv_from_url(self, url, filename):
+        """
+        Download CSV file from direct URL
+        """
+        print(f"Downloading {filename} from {url}")
+        
+        try:
+            response = self.session.get(url, timeout=60)
+            response.raise_for_status()
+            
+            with open(filename, 'wb') as f:
+                f.write(response.content)
+            
+            print(f"Successfully downloaded {filename}")
+            return pd.read_csv(filename)
+            
+        except Exception as e:
+            print(f"Error downloading {filename}: {str(e)}")
+            return None
+    
+    def create_manual_download_script(self):
+        """
+        Create a script for manual data download from UNCTAD sources
+        """
+        script = """
+# Manual Data Download Instructions for UNCTAD NTM Data
+# =====================================================
+
+# Method 1: Download from WITS (World Bank)
+# Visit: https://wits.worldbank.org/
+# 1. Go to "Trade Outcomes" > "Non-Tariff Measures"
+# 2. Select Country: South Korea
+# 3. Select Years: 2015-2024
+# 4. Select Products: All or specific sectors
+# 5. Download as CSV
+
+# Method 2: UNCTAD TRAINS Online
+# Visit: https://trainsonline.unctad.org/
+# 1. Register for an account
+# 2. Navigate to "Data Download"
+# 3. Select Korea, Republic of
+# 4. Choose NTM measures
+# 5. Download data files
+
+# Method 3: Direct CSV Downloads (if available)
+# These are example URLs - actual URLs may vary
+urls = [
+    'https://unctadstat.unctad.org/wds/TableViewer/downloadFile.aspx?sGrpRId=...',
+    'https://wits.worldbank.org/data/public/WITS-NTM-2024.csv'
+]
+
+# Python code to download:
+import pandas as pd
+import requests
+
+for i, url in enumerate(urls):
+    try:
+        df = pd.read_csv(url)
+        df.to_csv(f'unctad_data_{i+1}.csv', index=False)
+        print(f'Downloaded file {i+1}')
+    except Exception as e:
+        print(f'Error downloading file {i+1}: {e}')
+        """
+        
+        with open('manual_download_instructions.py', 'w') as f:
+            f.write(script)
+        
+        print("Created manual_download_instructions.py")
+        return script
+
+def load_local_data(file_path):
+    """
+    Load UNCTAD data from local CSV file
+    """
+    print(f"Loading data from {file_path}")
+    
+    try:
+        df = pd.read_csv(file_path)
+        print(f"Loaded {len(df)} records from {file_path}")
+        
+        # Basic data cleaning
+        df.columns = df.columns.str.lower().str.replace(' ', '_')
+        
+        return df
+    
+    except Exception as e:
+        print(f"Error loading {file_path}: {str(e)}")
+        return None
+
+def process_unctad_csv(df):
+    """
+    Process standard UNCTAD CSV format
+    """
+    print("Processing UNCTAD CSV data...")
+    
+    # Common column mappings for UNCTAD data
+    column_mappings = {
+        'reporter': 'country',
+        'reporter_iso': 'country_code',
+        'year': 'year',
+        'product_code': 'product_code',
+        'product_description': 'product_description',
+        'ntm_code': 'ntm_code',
+        'ntm_description': 'ntm_description',
+        'measure_description': 'measure_description',
+        'implementing_agency': 'agency',
+        'legal_basis': 'legal_basis',
+        'entry_into_force': 'entry_date',
+        'publication_date': 'publication_date'
+    }
+    
+    # Rename columns if they exist
+    for old_name, new_name in column_mappings.items():
+        if old_name in df.columns:
+            df = df.rename(columns={old_name: new_name})
+    
+    # Filter for South Korea if multiple countries present
+    if 'country_code' in df.columns:
+        df = df[df['country_code'].isin(['KOR', 'KR', 'Korea', 'South Korea'])]
+    
+    # Convert date columns
+    date_columns = ['entry_date', 'publication_date']
+    for col in date_columns:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors='coerce')
+    
+    # Add NTM category classification
+    if 'ntm_code' in df.columns:
+        df['ntm_category'] = df['ntm_code'].str[:1] # First letter indicates category
+        df['ntm_category_description'] = df['ntm_category'].map({
+            'A': 'Sanitary and Phytosanitary Measures',
+            'B': 'Technical Barriers to Trade',
+            'C': 'Pre-shipment Inspection',
+            'D': 'Contingent Trade-protective Measures',
+            'E': 'Non-automatic Licensing',
+            'F': 'Price Control Measures',
+            'G': 'Finance Measures',
+            'H': 'Measures Affecting Competition',
+            'I': 'Trade-related Investment Measures',
+            'J': 'Distribution Restrictions',
+            'K': 'Restrictions on Post-sales Services',
+            'L': 'Subsidies',
+            'M': 'Government Procurement Restrictions',
+            'N': 'Intellectual Property',
+            'O': 'Rules of Origin',
+            'P': 'Export-related Measures'
+        })
+    
+    # Add sector classification based on product codes
+    if 'product_code' in df.columns:
+        df['sector'] = df['product_code'].apply(classify_sector)
+    
+    print(f"Processed {len(df)} records")
+    return df
+
+def classify_sector(product_code):
+    """
+    Classify product codes into sectors
+    """
+    if pd.isna(product_code):
+        return 'Unknown'
+    
+    code_str = str(product_code)[:2]
+    
+    sector_mapping = {
+        ('01', '05'): 'Live Animals',
+        ('06', '14'): 'Vegetable Products',
+        ('15', '15'): 'Animal/Vegetable Fats',
+        ('16', '24'): 'Food Products',
+        ('25', '27'): 'Mineral Products',
+        ('28', '38'): 'Chemicals',
+        ('39', '40'): 'Plastics/Rubber',
+        ('41', '43'): 'Hides and Skins',
+        ('44', '46'): 'Wood Products',
+        ('47', '49'): 'Paper Products',
+        ('50', '63'): 'Textiles',
+        ('64', '67'): 'Footwear/Headgear',
+        ('68', '70'): 'Stone/Glass',
+        ('71', '71'): 'Precious Metals',
+        ('72', '83'): 'Base Metals',
+        ('84', '85'): 'Machinery/Electronics',
+        ('86', '89'): 'Transportation',
+        ('90', '92'): 'Precision Instruments',
+        ('93', '93'): 'Arms/Ammunition',
+        ('94', '96'): 'Miscellaneous',
+        ('97', '99'): 'Special Provisions'
+    }
+    
+    for (start, end), sector in sector_mapping.items():
+        if start <= code_str <= end:
+            return sector
+    
+    return 'Other'
+
+# Example usage and data integration
+def integrate_unctad_data():
+    """
+    Example of how to integrate downloaded UNCTAD data
+    """
+    print("Integrating UNCTAD data sources...")
+    
+    # Initialize downloader
+    downloader = UNCTADDataDownloader()
+    
+    # Create manual download instructions
+    downloader.create_manual_download_script()
+    
+    # Example of loading local data (once you have CSV files)
+    data_files = [
+        'korea_ntm_data.csv',
+        'korea_trade_data.csv',
+        'unctad_trains_data.csv'
+    ]
+    
+    datasets = {}
+    for file in data_files:
+        if os.path.exists(file):
+            df = load_local_data(file)
+            if df is not None:
+                processed_df = process_unctad_csv(df)
+                datasets[file.replace('.csv', '')] = processed_df
+    
+    return datasets
+
+# Advanced NTM Analysis Functions
+def calculate_ntm_indicators(df):
+    """
+    Calculate key NTM indicators from raw data
+    """
+    print("Calculating NTM indicators...")
+    
+    indicators = {}
+    
+    # 1. Coverage Ratio
+    if 'product_code' in df.columns:
+        total_products = df['product_code'].nunique()
+        affected_products = df[df['ntm_code'].notna()]['product_code'].nunique()
+        indicators['coverage_ratio'] = affected_products / total_products if total_products > 0 else 0
+    
+    # 2. Frequency Index
+    if 'ntm_code' in df.columns:
+        product_ntm_count = df.groupby('product_code')['ntm_code'].count()
+        indicators['frequency_index'] = (product_ntm_count > 0).mean()
+    
+    # 3. Prevalence Score
+    if 'ntm_category' in df.columns:
+        category_prevalence = df.groupby('ntm_category').size() / len(df)
+        indicators['prevalence_by_category'] = category_prevalence.to_dict()
+    
+    # 4. Regulatory Intensity
+    if 'agency' in df.columns:
+        agency_measures = df.groupby('agency').size()
+        indicators['regulatory_intensity'] = agency_measures.to_dict()
+    
+    # 5. Temporal Trends
+    if 'year' in df.columns:
+        yearly_measures = df.groupby('year').size()
+        indicators['temporal_trends'] = yearly_measures.to_dict()
+    
+    return indicators
+
+def create_ntm_dashboard_data(df):
+    """
+    Create data structure for NTM dashboard
+    """
+    print("Creating dashboard data structure...")
+    
+    dashboard_data = {}
+    
+    # Summary statistics
+    dashboard_data['summary'] = {
+        'total_measures': len(df),
+        'unique_products': df['product_code'].nunique() if 'product_code' in df.columns else 0,
+        'unique_agencies': df['agency'].nunique() if 'agency' in df.columns else 0,
+        'year_range': f"{df['year'].min()}-{df['year'].max()}" if 'year' in df.columns else "N/A"
+    }
+    
+    # Top measures by category
+    if 'ntm_category' in df.columns:
+        dashboard_data['top_categories'] = df['ntm_category'].value_counts().head(10).to_dict()
+    
+    # Most affected sectors
+    if 'sector' in df.columns:
+        dashboard_data['affected_sectors'] = df['sector'].value_counts().head(10).to_dict()
+    
+    # Recent measures (last 2 years)
+    if 'year' in df.columns:
+        recent_years = df['year'].max() - 1
+        recent_measures = df[df['year'] >= recent_years]
+        dashboard_data['recent_measures'] = len(recent_measures)
+    
+    # Implementing agencies
+    if 'agency' in df.columns:
+        dashboard_data['top_agencies'] = df['agency'].value_counts().head(10).to_dict()
+    
+    return dashboard_data
+
+# Main execution script
+if __name__ == "__main__":
+    print("UNCTAD NTM Data Access and Processing")
+    print("=" * 50)
+    
+    # Step 1: Set up data downloader
+    downloader = UNCTADDataDownloader()
+    
+    # Step 2: Create manual download instructions
+    print("\n1. Creating manual download instructions...")
+    downloader.create_manual_download_script()
+    
+    # Step 3: Example of automated download (if APIs are available)
+    print("\n2. Attempting automated downloads...")
+    try:
+        # Note: These may not work with actual APIs without proper authentication
+        ntm_data = downloader.download_ntm_data_wits('KOR', years=[2020, 2021, 2022])
+        trade_data = downloader.download_trade_data_unctad('KOR', years=[2020, 2021, 2022])
+        
+        if not ntm_data.empty:
+            print(f"Downloaded {len(ntm_data)} NTM records")
+            ntm_data.to_csv('korea_ntm_automated.csv', index=False)
+        
+        if not trade_data.empty:
+            print(f"Downloaded {len(trade_data)} trade records")
+            trade_data.to_csv('korea_trade_automated.csv', index=False)
+            
+    except Exception as e:
+        print(f"Automated download failed: {str(e)}")
+        print("Please use manual download methods instead.")
+    
+    # Step 4: Integration example
+    print("\n3. Data integration example...")
+    datasets = integrate_unctad_data()
+    
+    # Step 5: Analysis preparation
+    print("\n4. Preparing for analysis...")
+    
+    # If you have actual data files, process them
+    sample_data_structure = {
+        'country_code': ['KOR'] * 100,
+        'year': [2020, 2021, 2022, 2023, 2024] * 20,
+        'product_code': ['8471', '8517', '9001', '3004', '8703'] * 20,
+        'ntm_code': ['A14', 'B42', 'A22', 'B84', 'A31'] * 20,
+        'ntm_description': ['SPS Certificate Required'] * 100,
+        'agency': ['Ministry of Food and Drug Safety'] * 100,
+        'sector': ['Electronics', 'Telecommunications', 'Optical', 'Pharmaceuticals', 'Automotive'] * 20
+    }
+    
+    sample_df = pd.DataFrame(sample_data_structure)
+    processed_sample = process_unctad_csv(sample_df)
+    
+    # Calculate indicators
+    indicators = calculate_ntm_indicators(processed_sample)
+    dashboard_data = create_ntm_dashboard_data(processed_sample)
+    
+    print("\nSample indicators calculated:")
+    for key, value in indicators.items():
+        if isinstance(value, dict):
+            print(f"  {key}: {len(value)} categories")
+        else:
+            print(f"  {key}: {value}")
+    
+    print("\nData processing complete!")
+    print("Next steps:")
+    print("1. Download actual data using manual instructions")
+    print("2. Place CSV files in the same directory")
+    print("3. Run the main analyzer with real data")
+    print("4. Generate comprehensive policy recommendations")
+
+# Additional utility functions for specific UNCTAD data formats
+def parse_trains_xml(xml_file):
+    """
+    Parse TRAINS XML format (if available)
+    """
+    import xml.etree.ElementTree as ET
+    
+    print(f"Parsing TRAINS XML file: {xml_file}")
+    
+    try:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        
+        measures = []
+        for measure in root.findall('.//Measure'):
+            measure_data = {
+                'measure_id': measure.get('id'),
+                'product_code': measure.find('ProductCode').text if measure.find('ProductCode') is not None else '',
+                'ntm_code': measure.find('NTMCode').text if measure.find('NTMCode') is not None else '',
+                'description': measure.find('Description').text if measure.find('Description') is not None else '',
+                'agency': measure.find('Agency').text if measure.find('Agency') is not None else '',
+                'entry_date': measure.find('EntryDate').text if measure.find('EntryDate') is not None else ''
+            }
+            measures.append(measure_data)
+        
+        return pd.DataFrame(measures)
+    
+    except Exception as e:
+        print(f"Error parsing XML: {str(e)}")
+        return pd.DataFrame()
+
+def create_data_quality_report(df):
+    """
+    Generate data quality report for UNCTAD data
+    """
+    print("Generating data quality report...")
+    
+    quality_report = {
+        'total_records': len(df),
+        'columns': list(df.columns),
+        'missing_values': df.isnull().sum().to_dict(),
+        'data_types': df.dtypes.to_dict(),
+        'duplicates': df.duplicated().sum(),
+        'unique_values': {col: df[col].nunique() for col in df.columns}
+    }
+    
+    # Save report
+    with open('data_quality_report.json', 'w') as f:
+        json.dump(quality_report, f, indent=2, default=str)
+    
+    print("Data quality report saved to data_quality_report.json")
+    return quality_report
+</code></pre>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 mb-12">
@@ -453,6 +1023,7 @@
             window.addEventListener('scroll', updateActiveLink);
             updateActiveLink();
 
+            // Accordion for UNCTAD NTM Classification
             const ntmAccordionButton = document.querySelector('#ntm-accordion button');
             ntmAccordionButton.addEventListener('click', () => {
                 const content = ntmAccordionButton.nextElementSibling;
@@ -460,6 +1031,16 @@
                 content.classList.toggle('hidden');
                 icon.classList.toggle('rotate-180');
             });
+
+            // Accordion for Python Code
+            const pythonCodeAccordionButton = document.querySelector('#python-code-accordion button');
+            pythonCodeAccordionButton.addEventListener('click', () => {
+                const content = pythonCodeAccordionButton.nextElementSibling;
+                const icon = pythonCodeAccordionButton.querySelector('span:last-child');
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+
 
             const ntmTypeCtx = document.getElementById('ntmTypeChart').getContext('2d');
             new Chart(ntmTypeCtx, {
