@@ -495,7 +495,7 @@
             "SPS": "동식물위생검역조치(Sanitary and Phytosanitary Measures). 인간의 생명 및 건강, 동식물의 생명 및 건강을 보호하기 위해 시행되는 조치. 식품 안전, 질병 및 해충 방지, 위생 요건, 검사 및 인증 등이 포함됩니다.",
             "TBT": "무역상기술장벽(Technical Barriers to Trade). SPS 범주에 속하지 않는 모든 기술 규정, 표준, 적합성 평가 절차. 상품의 품질, 성능, 라벨링, 포장, 생산 공정 등에 대한 규제가 포함됩니다.",
             "범위비율": "특정 비관세조치(또는 모든 비관세조치)가 적용되는 품목들의 수입액이 전체 수입액에서 차지하는 비중을 나타내는 지표. 실제 교역에 비관세조치가 미치는 영향의 수준을 정량적으로 보여줍니다. (Coverage Ratio = (Σ DiVi) / (Σ Vi))",
-            "WTO": "세계무역기구(World Trade Organization). 국제 무역을 규율하는 유일한 국제기구로, 회원국 간의 무역 협상을 촉진하고, 무역 분쟁을 해결하며, 무역 정책의 투명성을 증진하는 역할을 합니다.",
+            "WTO": "세계무역기구(World Trade Organization). 국제 무역을 규율하는 유일한 국제기구로, 회원국 간의 무역 협상을 촉진하고, 무역 분쟁을 해결하며, 무역 정책의 투명성을 증진하는 역할을 합니다합니다.",
             "FTA": "자유무역협정(Free Trade Agreement). 특정 국가들 간에 상품, 서비스, 투자 등 무역 및 경제 활동에 대한 장벽(관세 및 비관세장벽)을 제거하거나 완화하기 위해 체결하는 협정입니다.",
             "CPTPP": "포괄적·점진적 환태평양경제동반자협정(Comprehensive and Progressive Agreement for Trans-Pacific Partnership). 아시아-태평양 지역 11개국이 참여하는 자유무역협정으로, 높은 수준의 시장 개방과 함께 노동, 환경, 국영기업 등 다양한 분야의 규범을 포함합니다.",
             "USMCA": "미국-멕시코-캐나다 협정(United States-Mexico-Canada Agreement). 기존 북미자유무역협정(NAFTA)을 대체하여 2020년 발효된 북미 3국 간의 무역 협정. 자동차 원산지 규정 강화, 디지털 무역 규범 등이 특징입니다.",
@@ -510,6 +510,18 @@
             // Get image popup elements
             const imagePopup = document.getElementById('imagePopup');
             const closeImagePopupBtn = document.getElementById('closeImagePopup');
+            const infoModal = document.getElementById('infoModal'); // Get infoModal element
+
+            // Function to manage body scroll
+            const toggleBodyScroll = () => {
+                // If either image popup or info modal is active, hide scrollbar
+                if (imagePopup.classList.contains('active') || infoModal.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    // Otherwise, restore scrollbar
+                    document.body.style.overflow = '';
+                }
+            };
 
             // Function to initialize AOS
             const initializeAOS = () => {
@@ -526,30 +538,16 @@
 
             // Show image popup immediately on page load
             imagePopup.classList.add('active');
+            toggleBodyScroll(); // Disable scroll initially
 
             // Close image popup and start animations when 'X' is clicked
             closeImagePopupBtn.addEventListener('click', () => {
                 imagePopup.classList.remove('active');
-                // Remove the popup from the DOM after transition for cleaner HTML
-                imagePopup.addEventListener('transitionend', () => {
-                    imagePopup.remove();
-                }, { once: true });
+                toggleBodyScroll(); // Re-enable scroll if no other modal is active
                 initializeAOS(); // Start AOS animations after closing the popup
             });
 
-            // Prevent body scrolling when image popup is active
-            if (imagePopup.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            }
-            imagePopup.addEventListener('transitionend', () => {
-                if (!imagePopup.classList.contains('active')) {
-                    document.body.style.overflow = '';
-                }
-            });
-
-
             // 용어 설명 모달 관련 요소 가져오기
-            const infoModal = document.getElementById('infoModal');
             const closeModalBtn = document.getElementById('closeModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
@@ -563,7 +561,7 @@
                         modalTitle.textContent = term;
                         modalContent.innerHTML = `<p>${termDefinitions[term]}</p>`; // p 태그로 감싸서 내용 추가
                         infoModal.classList.add('active'); // 모달 활성화
-                        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+                        toggleBodyScroll(); // Disable scroll when info modal is open
                     } else {
                         console.warn(`Definition not found for term: ${term}`);
                     }
@@ -572,14 +570,14 @@
 
             closeModalBtn.addEventListener('click', () => {
                 infoModal.classList.remove('active'); // 모달 비활성화
-                document.body.style.overflow = ''; // Restore scrolling
+                toggleBodyScroll(); // Restore scrolling
             });
 
             // 모달 외부 클릭 시 닫기
             infoModal.addEventListener('click', (e) => {
                 if (e.target === infoModal) {
                     infoModal.classList.remove('active');
-                    document.body.style.overflow = ''; // Restore scrolling
+                    toggleBodyScroll(); // Restore scrolling
                 }
             });
             // --- 용어 설명 모달 기능 추가 끝 ---
