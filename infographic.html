@@ -79,44 +79,6 @@
             white-space: pre; /* Preserve whitespace and line breaks */
         }
 
-        /* Scroll-to-top button styles */
-        #scrollToTopBtn {
-            display: none; /* Hidden by default */
-            position: fixed; /* Fixed position */
-            bottom: 20px; /* Place the button at the bottom of the page */
-            right: 20px; /* Place the button at the right of the page */
-            z-index: 99; /* Make sure it does not overlap */
-            border: none; /* Remove borders */
-            outline: none; /* Remove outline */
-            background-color: #1976D2; /* Primary Blue */
-            color: white; /* White text */
-            cursor: pointer; /* Add a mouse pointer on hover */
-            padding: 15px; /* Some padding */
-            border-radius: 50%; /* Rounded corners */
-            font-size: 18px; /* Increase font size */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-
-        #scrollToTopBtn:hover {
-            background-color: #0D47A1; /* Darker blue on hover */
-        }
-
-        /* CSS for the arrow icon */
-        #scrollToTopBtn::after {
-            content: '';
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 12px solid white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translateY(-2px); /* Adjust position */
-        }
-
         /* Modal specific styles for display control */
         .info-modal-overlay {
             position: fixed;
@@ -144,7 +106,6 @@
 <body class="bg-[#E3F2FD] text-gray-800">
 
     <div class="min-h-screen bg-gradient-to-b from-[#E3F2FD] to-white">
-        <!-- Main content area -->
         <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
             
             <section id="hero" class="text-center py-16 md:py-24 bg-gradient-to-br from-[#E3F2FD] to-white rounded-lg shadow-xl min-h-screen flex flex-col justify-center">
@@ -418,19 +379,14 @@
         </div>
     </footer>
 
-    <!-- Info Modal for term definitions -->
     <div id="infoModal" class="info-modal-overlay">
         <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-11/12 max-h-[90vh] overflow-y-auto relative">
             <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-4"></h3>
             <div id="modalContent" class="text-gray-700 leading-relaxed">
-                <!-- Definition will be loaded here -->
-            </div>
+                </div>
         </div>
     </div>
-
-    <!-- Scroll to Top Button -->
-    <button id="scrollToTopBtn" title="맨 위로 이동"></button>
 
     <script>
         // Predefined term definitions
@@ -455,64 +411,40 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const sections = document.querySelectorAll('main section');
-            // Removed navLinks as horizontal nav is gone
-            // const navLinks = document.querySelectorAll('.nav-link'); 
+            
+            // 용어 설명 모달 관련 요소 가져오기
+            const infoModal = document.getElementById('infoModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const termExplainers = document.querySelectorAll('.term-explainer');
 
-            // Sidebar elements
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
-            const closeSidebar = document.getElementById('close-sidebar');
-            const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
-
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                sidebarOverlay.classList.remove('hidden');
-            }
-
-            function closeSidebarFn() {
-                sidebar.classList.remove('translate-x-0');
-                sidebar.classList.add('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
-            }
-
-            // Event listeners for sidebar toggle
-            if (menuToggle) {
-                menuToggle.addEventListener('click', openSidebar);
-            }
-            if (closeSidebar) {
-                closeSidebar.addEventListener('click', closeSidebarFn);
-            }
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', closeSidebarFn);
-            }
-            sidebarNavLinks.forEach(link => {
-                link.addEventListener('click', closeSidebarFn);
+            // --- 용어 설명 모달 기능 추가 ---
+            termExplainers.forEach(termElement => {
+                termElement.addEventListener('click', () => {
+                    const term = termElement.dataset.term;
+                    if (termDefinitions[term]) {
+                        modalTitle.textContent = term;
+                        modalContent.innerHTML = `<p>${termDefinitions[term]}</p>`; // p 태그로 감싸서 내용 추가
+                        infoModal.classList.add('active'); // 모달 활성화
+                    } else {
+                        console.warn(`Definition not found for term: ${term}`);
+                    }
+                });
             });
 
+            closeModalBtn.addEventListener('click', () => {
+                infoModal.classList.remove('active'); // 모달 비활성화
+            });
 
-            // updateActiveLink function is now simplified as horizontal nav is gone
-            function updateActiveLink() {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    if (pageYOffset >= sectionTop - 80) {
-                        current = section.getAttribute('id');
-                    }
-                });
+            // 모달 외부 클릭 시 닫기
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) {
+                    infoModal.classList.remove('active');
+                }
+            });
+            // --- 용어 설명 모달 기능 추가 끝 ---
 
-                // Update sidebar nav links
-                sidebarNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href').includes(current)) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-
-            window.addEventListener('scroll', updateActiveLink);
-            updateActiveLink();
 
             // Accordion for UNCTAD NTM Classification
             const ntmAccordionButton = document.querySelector('#ntm-accordion button');
@@ -525,21 +457,7 @@
                 });
             }
 
-
-            // Accordion for Python Code (This section is now removed from HTML as per request)
-            /*
-            const pythonCodeAccordionButton = document.querySelector('#python-code-accordion button');
-            if (pythonCodeAccordionButton) {
-                pythonCodeAccordionButton.addEventListener('click', () => {
-                    const content = pythonCodeAccordionButton.nextElementSibling;
-                    const icon = pythonCodeAccordionButton.querySelector('span:last-child');
-                    content.classList.toggle('hidden');
-                    icon.classList.toggle('rotate-180');
-                });
-            }
-            */
-
-
+            // Chart.js for NTM Type Chart
             const ntmTypeCtx = document.getElementById('ntmTypeChart').getContext('2d');
             new Chart(ntmTypeCtx, {
                 type: 'doughnut',
@@ -583,6 +501,7 @@
                 }
             });
 
+            // Chart.js for RCEP Comparison Chart
             const rcepData = {
                 labels: ['한국', '필리핀', '일본', '인도네시아', 'RCEP 평균'],
                 datasets: {
