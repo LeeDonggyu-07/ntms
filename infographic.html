@@ -3,331 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인포그래픽: 비관세조치의 영향과 대응</title>
+    <title>비관세조치의 영향과 대응</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* 기본 스타일 및 사용자 정의 글꼴 */
         body {
-            font-family: 'Noto Sans KR', 'Poppins', sans-serif;
+            font-family: 'Noto Sans KR', sans-serif;
             scroll-behavior: smooth;
-            overflow-x: hidden;
-            background-color: #f8fafc; /* 슬레이트 50 */
-            color: #1e293b; /* 슬레이트 800 */
         }
-
-        /* 전체 화면 섹션을 위한 슬라이드 구조 */
-        .slide {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 4rem 2rem;
-            border-bottom: 1px solid #e2e8f0; /* 슬레이트 200 */
-            position: relative;
-            scroll-snap-align: start;
-        }
-
-        .scroll-container {
-            scroll-snap-type: y mandatory;
-            height: 100vh;
-            overflow-y: scroll;
-        }
-
-        .slide:last-child {
-            border-bottom: none;
-        }
-
-        .slide-content {
-            max-width: 1200px;
-            width: 100%;
-            margin: auto;
-        }
-
-        /* 타이포그래피 및 시각 효과 */
-        h1, h2, h3 {
-            font-family: 'Poppins', 'Noto Sans KR', sans-serif;
-            font-weight: 900;
-            letter-spacing: -0.025em;
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, #3b82f6, #1d4ed8); /* 블루 500에서 블루 700으로 */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .bg-gradient-light {
-            background-image: linear-gradient(to bottom right, #f0f9ff, #e0f2fe); /* 스카이 50에서 스카이 100으로 */
-        }
-
-        /* 블러 및 호버 효과가 있는 카드 스타일링 */
-        .card {
-            background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 */
-            backdrop-filter: blur(10px);
-            border: 1px solid #e2e8f0; /* 슬레이트 200 */
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 30px -10px rgb(0 0 0 / 0.1);
-        }
-
-        /* 대화형 용어 설명 스타일 */
-        .term-explainer {
-            text-decoration: none;
-            cursor: pointer;
-            font-weight: 700;
-            color: #2563eb; /* 블루 600 */
-            border-bottom: 2px dotted #60a5fa; /* 블루 400 */
-            transition: color 0.3s, background-color 0.3s;
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        .term-explainer:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-
-        /* 적절한 렌더링을 보장하는 차트 컨테이너 */
         .chart-container {
             position: relative;
             width: 100%;
-            height: 100%;
-            min-height: 300px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
         }
-        
         @media (min-width: 768px) {
-            .chart-container.comparison {
-                height: 500px;
+            .chart-container {
+                height: 400px;
+                max-height: 50vh;
             }
         }
-
-
-        /* 사용자 정의 글머리 기호 목록 스타일 */
-        .bullet-list li {
-            position: relative;
-            padding-left: 2rem;
-            font-size: 1.125rem;
-            line-height: 1.8;
-            color: #334155; /* 슬레이트 700 */
+        .section-heading-box {
+            background-color: #1976D2; /* Primary Blue for strong background */
+            color: white; /* White text for contrast */
+            border-left: 8px solid #0D47A1; /* Dark Blue left border */
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+            margin-bottom: 1.5rem; /* Space below heading box */
+        }
+        .list-item-card {
+            background-color: #ffffff;
+            border: 1px solid #E0F2FE; /* Very Light Blue border */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Enhanced shadow */
+            transition: transform 0.2s ease-in-out;
+        }
+        .list-item-card:hover {
+            transform: translateY(-3px);
+        }
+        .term-explainer {
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+            color: inherit; /* Inherit color from parent */
+        }
+        .term-explainer:hover {
+            text-decoration: underline;
+            color: #1976D2; /* Subtle hover effect with primary blue */
+        }
+        /* Style for the code block */
+        .code-accordion-content {
+            background-color: #f8f8f8; /* Light grey background for code */
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto; /* Enable horizontal scrolling for long lines */
+            font-family: 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.25;
+            color: #333; /* Darker text for code */
+        }
+        .code-accordion-content pre {
+            margin: 0;
+            padding: 0;
+        }
+        .code-accordion-content code {
+            white-space: pre; /* Preserve whitespace and line breaks */
         }
 
-        .bullet-list li::before {
-            content: '✓';
+        /* Scroll-to-top button styles */
+        #scrollToTopBtn {
+            display: none; /* Hidden by default */
+            position: fixed; /* Fixed position */
+            bottom: 20px; /* Place the button at the bottom of the page */
+            right: 20px; /* Place the button at the right of the page */
+            z-index: 99; /* Make sure it does not overlap */
+            border: none; /* Remove borders */
+            outline: none; /* Remove outline */
+            background-color: #1976D2; /* Primary Blue */
+            color: white; /* White text */
+            cursor: pointer; /* Add a mouse pointer on hover */
+            padding: 15px; /* Some padding */
+            border-radius: 50%; /* Rounded corners */
+            font-size: 18px; /* Increase font size */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #0D47A1; /* Darker blue on hover */
+        }
+
+        /* CSS for the arrow icon */
+        #scrollToTopBtn::after {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid white;
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(-2px); /* Adjust position */
+        }
+
+        /* Modal specific styles for display control */
+        .info-modal-overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            top: 4px;
-            color: #3b82f6; /* 블루 500 */
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        /* 정책 섹션을 위한 아이콘 상자 */
-        .icon-box {
-            background: #e0f2fe; /* 스카이 100 */
-            color: #0369a1; /* 시안 700 */
-            border-radius: 50%;
-            width: 5rem;
-            height: 5rem;
-            display: flex;
-            justify-content: center;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: none;
             align-items: center;
-            font-size: 2.5rem;
-            margin: 0 auto 1.5rem;
-            border: 2px solid #bae6fd; /* 스카이 200 */
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
         }
 
-        /* 밝은 테마를 위한 모달 스타일 */
-        #infoModal {
-            transition: opacity 0.3s ease;
-        }
-        #modalContentContainer {
-            background-color: white;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            color: #1e293b;
-        }
-
-        /* 필터 버튼 스타일 */
-        .filter-btn {
-            transition: all 0.2s ease-in-out;
-        }
-        .filter-btn.active {
-            background-color: #2563eb;
-            color: white;
-            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        .info-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="bg-[#E3F2FD] text-gray-800">
 
-<div class="scroll-container">
-    <!-- 슬라이드 1: 제목 -->
-    <section id="hero" class="slide bg-gradient-light">
-        <div class="slide-content text-center">
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">
-                <span class="block text-slate-900">신보호무역주의 시대</span>
-                <span class="block text-gradient mt-2">비관세조치의 영향과 대응</span>
-            </h1>
-            <p class="mt-8 max-w-3xl mx-auto text-lg md:text-xl text-slate-600">
-                <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터를 통해 한국의 비관세조치 현황을 심층 분석하고, 글로벌 무역 환경 변화에 따른 정책적 방향성을 제시합니다.
-            </p>
-            <div class="mt-12">
-                <div class="inline-block bg-white border border-slate-200 rounded-full px-8 py-6 shadow-lg">
-                    <p class="text-lg font-medium text-slate-500">한국 전체 수입 품목 중</p>
-                    <p class="text-7xl font-bold text-blue-600 my-2">93.8%</p>
-                    <p class="text-lg font-medium text-slate-500">비관세조치 영향권</p>
-                </div>
-            </div>
-            <p class="mt-8 text-slate-500">✨ <span class="text-blue-600 font-semibold">밑줄 친 용어</span>를 클릭하면 설명을 볼 수 있습니다. 아래로 스크롤하여 계속 진행하세요.</p>
-        </div>
-    </section>
-
-    <!-- 슬라이드 2: 개요 및 이론적 배경 -->
-    <section id="overview" class="slide bg-white">
-        <div class="slide-content grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div class="text-left">
-                <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-6">무역의 패러다임 전환</h2>
-                <ul class="bullet-list space-y-4">
-                    <li>세계 무역은 전통적인 관세 장벽에서 <span class="term-explainer" data-term="비관세조치">비관세조치</span>로 이동하고 있습니다.</li>
-                    <li><span class="term-explainer" data-term="비관세조치">비관세조치</span>는 보건, 안전, 환경에 대한 규제를 포함합니다.</li>
-                    <li>이러한 변화는 국내 산업과 법률을 우선시하는 <span class="term-explainer" data-term="신보호무역주의">신보호무역주의</span>에 의해 주도됩니다.</li>
-                    <li><span class="term-explainer" data-term="비관세조치">비관세조치</span>는 합법적인 정책 도구이거나 위장된 <span class="term-explainer" data-term="비관세장벽">무역 장벽</span>일 수 있습니다.</li>
-                </ul>
-            </div>
-            <div class="flex flex-col space-y-8">
-                <div class="card p-8">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-gradient"><span class="term-explainer" data-term="SPS">SPS</span> (동식물위생검역조치)</h3>
-                    <p class="text-center text-slate-600">식품 안전 및 동식물 보호를 위한 규제. 종종 특정 국가나 제품에 선별적으로 적용됩니다.</p>
-                </div>
-                <div class="card p-8">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-gradient"><span class="term-explainer" data-term="TBT">TBT</span> (무역상기술장벽)</h3>
-                    <p class="text-center text-slate-600">기술 표준, 라벨링 및 포장 규정. 일반적으로 모든 무역 상대국에 광범위하게 적용됩니다.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 슬라이드 3: 한국 현황 분석 -->
-    <section id="korea-analysis" class="slide bg-gradient-light">
-        <div class="slide-content">
-            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 text-center mb-12">한국의 비관세조치 현황 분석</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div class="card h-full">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-800">유형별 비중 (건수 기준)</h3>
-                    <div class="chart-container h-[400px]">
-                        <canvas id="ntmTypeChart"></canvas>
+    <div class="min-h-screen bg-gradient-to-b from-[#E3F2FD] to-white">
+        <!-- Main content area -->
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            
+            <section id="hero" class="text-center py-16 md:py-24 bg-gradient-to-br from-[#E3F2FD] to-white rounded-lg shadow-xl min-h-screen flex flex-col justify-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-[#0D47A1] tracking-tighter leading-tight drop-shadow-md">
+                    <span class="block">신보호무역주의 시대,</span>
+                    <span class="block text-[#1976D2] mt-2">비관세조치의 영향과 대응</span>
+                </h1>
+                <p class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-gray-700">
+                    <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터를 통해 한국의 비관세조치 현황을 심층 분석하고, 글로벌 무역 환경 변화에 따른 정책적 방향성을 제시합니다.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <div class="bg-white p-6 rounded-3xl shadow-xl border border-[#90CAF9] transform hover:scale-105 transition-transform duration-300">
+                        <p class="text-base font-medium text-gray-500">한국 전체 수입 품목 중</p>
+                        <p class="text-5xl font-black text-[#1976D2] mt-2">93.8%</p>
+                        <p class="text-base font-medium text-gray-500 mt-2">비관세조치 영향권</p>
                     </div>
                 </div>
-                <div class="card h-full">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-800">주요 분석 결과</h3>
-                    <ul class="bullet-list space-y-4 mt-6">
-                        <li>한국은 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터베이스에 <strong>1,930건</strong>의 비관세조치를 등록했습니다.</li>
-                        <li>기술적 조치(<span class="term-explainer" data-term="TBT">TBT</span> & <span class="term-explainer" data-term="SPS">SPS</span>)가 전체 사례의 <strong>78.5%</strong>를 차지합니다.</li>
-                        <li><span class="term-explainer" data-term="TBT">TBT</span>는 광범위하게 적용되어 품목의 <strong>91.1%</strong>에 영향을 미칩니다.</li>
-                        <li><span class="term-explainer" data-term="SPS">SPS</span>는 선별적으로 적용되며, 사례의 <strong>74.7%</strong>가 특정 국가를 대상으로 합니다.</li>
-                        <li><strong>주요 소관 부처:</strong> 농림축산식품부 (38.3%), 산업통상자원부 (11.6%), 식품의약품안전처 (10.7%).</li>
+                <p class="mt-8 text-center text-sm text-gray-600">✨ 밑줄이 있는 용어를 클릭하면 상세 설명을 볼 수 있습니다.</p>
+            </section>
+
+            <section id="overview" class="py-16 md:py-20 border-t border-gray-200 min-h-screen flex flex-col justify-center">
+                <div class="section-heading-box mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">무역의 패러다임 전환</h2>
+                    <p class="mt-4 text-lg text-white">관세 장벽이 낮아지면서, 눈에 보이지 않는 새로운 장벽이 떠오르고 있습니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-12">
+                    <div class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-8 border-red-400">
+                        <h3 class="text-2xl font-bold text-red-600">관세</h3>
+                        <p class="text-7xl font-black text-red-500 my-4">↓</p>
+                        <p class="text-lg text-gray-700">1996년 <strong>10.1%</strong> → 2016년 <strong>6.4%</strong></p>
+                        <p class="text-sm text-gray-500 mt-2">(전 세계 평균 관세율)</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-8 border-green-400">
+                        <h3 class="text-2xl font-bold text-green-600">비관세조치 (NTM)</h3>
+                        <p class="text-7xl font-black text-green-500 my-4">↑</p>
+                        <p class="text-lg text-gray-700">1996년 <strong>1,145건</strong> → 2016년 <strong>3,045건</strong></p>
+                        <p class="text-sm text-gray-500 mt-2">(UNCTAD TRAINS 데이터베이스)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <h4 class="font-bold text-lg text-gray-900">비관세조치(NTM)란?</h4>
+                        <p class="mt-2 text-gray-600">관세 이외에 상품의 교역량이나 가격에 영향을 미칠 수 있는 모든 정책적 조치. <strong>비관세장벽</strong>보다 상위 개념으로, 공공의 이익을 위한 규제적 조치일 수도, 보호주의적 목적을 가질 수도 있습니다.</p>
+                    </div>
+                    <div id="ntm-accordion" class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                        <button class="w-full text-left font-bold text-lg text-gray-900 flex justify-between items-center">
+                            <span><span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 비관세조치 분류 체계 (클릭하여 보기)</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="mt-4 space-y-3 hidden text-gray-600">
+                            <p><strong>A. <span class="term-explainer" data-term="SPS">SPS</span> (동식물위생검역조치):</strong> 식품 안전, 동식물 보호 목적.</p>
+                            <p><strong>B. <span class="term-explainer" data-term="TBT">TBT</span> (무역상기술장벽):</strong> SPS 범주 외 기술 규정. 상품 품질, 성능, 라벨링 등.</p>
+                            <p><strong>C. 선적전검사와 기타 통관절차:</strong> 검사, 항구 통과 의무 등 행정 절차.</p>
+                            <p><strong>D. 무역보호조치:</strong> 반덤핑, 상계관세, 세이프가드 등 불공정 무역 대응.</p>
+                            <p><strong>E. 수량제한조치:</strong> 비자동 수입 허가, 쿼터, 수입 금지 등 직접적 수량 제한.</p>
+                            <p><strong>F. 가격통제조치:</strong> 최저 수입 가격, 추가 세금 등 가격 통제.</p>
+                            <p><strong>G. 금융조치:</strong> 수입 대금 지급 제한, 외환 규제 등.</p>
+                            <p><strong>H. 경쟁 관련 조치:</strong> 국영 무역 기업 특혜 등.</p>
+                            <p><strong>I. 무역 관련 투자조치:</strong> 현지 부품 사용 의무 등 투자 연계 조치.</p>
+                            <p><strong>J. 유통제한</strong> 및 <strong>K: 판매 후 서비스 제한:</strong> 유통 및 서비스 제한.</p>
+                            <p><strong>L. 보조금(수출 보조금 제외)</strong>, <strong>M: 정부 조달 제한</strong>, <strong>N: 지식재산권</strong>, <strong>O: 원산지 규정</strong>.</p>
+                            <p><strong>P. 수출 관련 조치:</strong> 수출 허가, 쿼터, 가격 통제 등 수출국 조치.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-md border border-gray-100 mt-12 md:col-span-2">
+                    <h3 class="text-xl font-bold text-center mb-6">신보호무역주의 확산 배경과 비관세조치의 역할</h3>
+                    <div class="space-y-4 text-gray-600">
+                        <p><strong>정치적 변화:</strong> 2016년 트럼프 당선, 브렉시트 등 고립주의 확산.</p>
+                        <p><strong>NTM 증가:</strong> WTO 통계상 미국의 NTM 증가 (특히 SPS/TBT), G20 국가들의 무역 제한 조치 증가.</p>
+                        <p><strong>NTM의 전략적 활용:</strong> 관세 인하 후 국내 산업 보호 수단으로 부상. 유연성, 선별성, 국제 비판 회피 용이.</p>
+                        <p><strong>공익 명분 활용:</strong> 보건, 환경, 안전 등 사회적 이슈 명목의 기술 규제 증가. 정당한 정책이나 무역 장애 요인으로 작용 가능.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="korea-analysis" class="py-16 md:py-20 border-t border-gray-200 min-h-screen flex flex-col justify-center">
+                <div class="section-heading-box mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">한국 비관세조치 현황 분석</h2>
+                    <p class="mt-4 text-lg text-white"><span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터 분석 결과, 한국의 비관세조치는 특정 유형에 집중되어 있으며, 광범위한 품목에 영향을 미치고 있습니다.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="section-heading-box mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 text-center">연구 방법론 및 데이터 개요</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">본 연구는 한국의 <span class="term-explainer" data-term="비관세조치">비관세조치</span> 현황과 영향을 분석하기 위해 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> TRAINS 데이터베이스를 핵심 자료원으로 활용했습니다. 데이터의 투명성과 재현성을 위해 Python 프로그래밍 언어를 통해 직접 분석했습니다.</p>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li class="list-item-card"><strong>데이터 로딩 및 전처리:</strong> UNCTAD TRAINS 원자료 다운로드 및 전처리.</li>
+                            <li class="list-item-card"><strong>유형별 현황 집계:</strong> 비관세조치 코드별 건수, '대세계 조치'/'특정국 조치' 비중 파악.</li>
+                            <li class="list-item-card"><strong>품목별 영향 분석:</strong> HS 코드 10단위 기준 대상 품목 비중(빈도 지수) 산출.</li>
+                            <li class="list-item-card"><strong><span class="term-explainer" data-term="범위비율">범위비율</span>(coverage ratio) 계산:</strong> 비관세조치 영향 품목의 수입액 비중 산출. (Coverage Ratio = (Σ DiVi) / (Σ Vi))</li>
+                            <li class="list-item-card"><strong>세부 현황 집계:</strong> 유형별/소관 부처별 특징 파악.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="section-heading-box mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 text-center">한국의 비관세조치 현황 및 영향 분석</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">총 1,930건의 <span class="term-explainer" data-term="비관세조치">비관세조치</span>가 29개 정부 부처, 427개 법령에 근거하여 2015년 기준 한국 전체 품목의 93.8%에 영향을 미치고 있습니다.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                                <h3 class="text-xl font-bold text-center mb-2">유형별 비중 (건수 기준)</h3>
+                                <p class="text-center text-sm text-gray-500 mb-6">기술적 조치(<span class="term-explainer" data-term="TBT">TBT</span>/<span class="term-explainer" data-term="SPS">SPS</span>)가 전체의 약 78.5%를 차지</p>
+                                <div class="chart-container h-80">
+                                    <canvas id="ntmTypeChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                                <h3 class="text-xl font-bold text-center mb-2">TBT vs SPS: 적용 방식의 차이</h3>
+                                <p class="text-center text-sm text-gray-500 mb-6">두 조치는 적용 범위와 대상에서 뚜렷한 차이를 보입니다.</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                    <div class="bg-sky-50 border border-sky-200 p-6 rounded-lg text-center">
+                                        <h4 class="font-bold text-lg text-sky-800">TBT (무역상기술장벽)</h4>
+                                        <p class="text-3xl font-bold text-sky-600 mt-3">91.1%</p>
+                                        <p class="mt-2 text-sky-700">광범위한 품목에 포괄적으로 적용 (대세계 조치)</p>
+                                    </div>
+                                    <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-lg text-center">
+                                        <h4 class="font-bold text-lg text-emerald-800">SPS (동식물위생검역)</h4>
+                                        <p class="text-3xl font-bold text-emerald-600 mt-3">30.5%</p>
+                                        <p class="mt-2 text-emerald-700">특정국·품목에 선별적으로 적용 (특정국 조치)</p>
+                                    </div>
+                                </div>
+                                <div class="mt-8">
+                                    <h4 class="font-bold text-lg text-center mb-4">주요 소관 부처 (건수 기준)</h4>
+                                    <div class="w-full bg-gray-200 rounded-full h-6">
+                                        <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-6 rounded-full text-xs font-medium text-blue-100 text-center p-1 leading-none" style="width: 38.3%">농림축산식품부 (38.3%)</div>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-6 mt-3">
+                                        <div class="bg-gradient-to-r from-slate-500 to-gray-400 h-6 rounded-full text-xs font-medium text-slate-100 text-center p-1 leading-none" style="width: 11.6%">산업통상자원부 (11.6%)</div>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">식품의약품안전처, 환경부 등도 주요 기관.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="comparison" class="py-16 md:py-20 border-t border-gray-200 min-h-screen flex flex-col justify-center">
+                <div class="section-heading-box mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">RCEP 참여국과 비교 분석</h2>
+                    <p class="mt-4 text-lg text-white">한국의 비관세조치 영향력은 <span class="term-explainer" data-term="RCEP">RCEP</span> 역내에서 어느 수준일까요?</p>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                    <div class="flex flex-wrap justify-center gap-2 mb-6">
+                        <button class="filter-btn active bg-[#1976D2] text-white px-4 py-2 rounded-full text-sm font-semibold shadow" data-type="overall">종합</button>
+                        <button class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-type="tbt">TBT</button>
+                        <button class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-type="sps">SPS</button>
+                        <button class="filter-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-type="price">가격통제</button>
+                    </div>
+                    <div class="chart-container h-96 md:h-[500px] max-h-[60vh]">
+                        <canvas id="rcepComparisonChart"></canvas>
+                    </div>
+                    <p id="chart-description" class="text-center mt-4 text-gray-700 text-base md:text-lg font-medium">종합 <span class="term-explainer" data-term="범위비율">범위비율</span>에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다。</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 mt-12">
+                    <div class="section-heading-box mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 text-center">유형별 범위비율 상세 비교</h3>
+                    </div>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                        <li class="list-item-card"><strong>종합:</strong> 필리핀(44.1%) > 한국(39.6%) > 일본(33.7%). 한국은 <span class="term-explainer" data-term="RCEP">RCEP</span> 역내 NTM 활용도 높은 국가.</li>
+                        <li class="list-item-card"><strong><span class="term-explainer" data-term="SPS">SPS</span>:</strong> 한국 18.1% (인도네시아 다음 2위). 농산물 위생/검역 엄격 적용.</li>
+                        <li class="list-item-card"><strong><span class="term-explainer" data-term="TBT">TBT</span>:</strong> 한국 86.2% (RCEP 최고). 제품 품질, 안전, 환경 등 기술 규제 광범위 활용.</li>
+                        <li class="list-item-card"><strong>가격통제조치:</strong> 한국 76.9% (RCEP 최고). 수입 면허 수수료, 세관 수수료 등 광범위 적용.</li>
+                        <li class="list-item-card"><strong>수량제한조치:</strong> 한국 2.9% (RCEP 평균보다 낮음). 기술/가격 통제에 더 의존.</li>
                     </ul>
+                    <p class="text-gray-600 mt-4">한국의 <span class="term-explainer" data-term="비관세조치">비관세조치</span>는 광물과 수량제한조치를 제외한 여러 분야에 광범위하게 영향을 미치며, 개발도상국과 선진국의 특징을 동시에 가집니다. 이는 <span class="term-explainer" data-term="글로벌 가치사슬">글로벌 무역 환경</span> 변화에 대응하는 전략적 접근의 결과입니다.</p>
                 </div>
+            </section>
+
+            <section id="international-response" class="py-16 md:py-20 border-t border-gray-200 min-h-screen flex flex-col justify-center">
+                <div class="section-heading-box mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">해외 주요국의 비관세조치 대응 사례 및 국제 협력 동향</h2>
+                    <p class="mt-4 text-lg text-white">비경제적 요소를 기반으로 한 비관세 장벽 증가 추세 속 글로벌 대응 전략.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="section-heading-box mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 text-center">주요국 비관세조치 대응 사례</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li class="list-item-card"><strong>미국 트럼프 행정부:</strong> '상호관세' 근거로 '<strong>비관세장벽</strong>' 지적 (한국 소고기, 망 사용료 등).</li>
+                            <li class="list-item-card"><strong>각국의 반박:</strong> 중국(산업 보조금), 인도(데이터 주권), 호주(데이터 규제) 등 자국 정책 정당성 주장.</li>
+                            <li class="list-item-card"><strong>시사점:</strong> <strong>비관세조치</strong>가 국가 주권적 정책과 밀접하게 연관됨.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                        <div class="section-heading-box mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 text-center">국제 협력 동향 및 디지털 무역 환경</h3>
+                        </div>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2 mb-4">
+                            <li class="list-item-card"><strong><span class="term-explainer" data-term="WTO">WTO</span> 활동:</strong> TBT/SPS 위원회 통한 투명성 증진 및 무역 애로 논의 (한국의 <span class="term-explainer" data-term="STC">STC</span> 제기 노력).</li>
+                            <li class="list-item-card"><strong><span class="term-explainer" data-term="FTA">FTA</span> 역할:</strong> <span class="term-explainer" data-term="CPTPP">CPTPP</span> <span class="term-explainer" data-term="SPS">SPS</span> 협정 등 강화된 투명성, <span class="term-explainer" data-term="CTC">기술 협의</span> 규정.</li>
+                            <li class="list-item-card"><strong>디지털 무역 장벽:</strong> 국경 간 데이터 이동 제한, 컴퓨팅 설비 현지화 등. <span class="term-explainer" data-term="CPTPP">CPTPP</span>, <span class="term-explainer" data-term="USMCA">USMCA</span>, <span class="term-explainer" data-term="RCEP">RCEP</span> 등 협정 내 규정 차이.</li>
+                            <li class="list-item-card"><strong><span class="term-explainer" data-term="WTO">WTO</span> <span class="term-explainer" data-term="JSI">전자상거래 JSI</span>:</strong> 데이터 조항 제외 등 규범 파편화 문제.</li>
+                            <li class="list-item-card"><strong>기업 지원 인프라:</strong> 코트라, 국가기술표준원(<span class="term-explainer" data-term="TBT">TBT</span> 종합지원센터) 등 정보 제공 및 대응 지원.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="policy" class="py-16 md:py-20 border-t border-gray-200 min-h-screen flex flex-col justify-center">
+                <div class="section-heading-box mb-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">미래를 위한 정책 제언</h2>
+                    <p class="mt-4 text-lg text-white"><span class="term-explainer" data-term="신보호무역주의">신보호무역주의</span> 파고를 넘기 위한 국내 역량 강화, 국제 협력, 디지털 전환 대응 전략.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#E3F2FD] text-[#1976D2] mb-6">
+                            <span class="text-4xl">🏠</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-[#0D47A1] mb-4">국내 대응 강화</h3>
+                        <ul class="space-y-2 text-gray-700 list-disc list-inside">
+                            <li><strong>DB 및 인력 양성 고도화:</strong> 체계적 <span class="term-explainer" data-term="비관세조치">비관세조치</span> DB 구축, 무역/기술/법률 전문성 인력 양성.</li>
+                            <li><strong>정부 조직 역량 강화:</strong> 범부처 정보 공유/정책 조율, <span class="term-explainer" data-term="SPS">SPS</span> 인프라 확충.</li>
+                            <li><strong>기업 지원 확대:</strong> 중소기업 맞춤 컨설팅, 기술 규제 영향 평가.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#E3F2FD] text-[#1976D2] mb-6">
+                            <span class="text-4xl">🌍</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-[#0D47A1] mb-4">국제 협력 및 다자 대응</h3>
+                        <ul class="space-y-2 text-gray-700 list-disc list-inside">
+                            <li><strong><span class="term-explainer" data-term="WTO">WTO</span> 활동 강화:</strong> TBT/SPS 위원회 참여, 분쟁 해결 제도 활용.</li>
+                            <li><strong>협의 채널 활성화:</strong> <span class="term-explainer" data-term="CTC">기술 협의</span> 통한 무역 분쟁 예방/해결.</li>
+                            <li><strong>국제 표준 참여:</strong> 규범 형성 기여, 개도국 기술 지원.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-xl transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#E3F2FD] text-[#1976D2] mb-6">
+                            <span class="text-4xl">💻</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-[#0D47A1] mb-4">디지털 무역 환경 대응</h3>
+                        <ul class="space-y-2 text-gray-700 list-disc list-inside">
+                            <li><strong>통상 규범 일관성:</strong> 데이터 활용 균형점 모색, 국제 논의 참여.</li>
+                            <li><strong>산업 대응 역량 강화:</strong> 스마트 농업 등 산업 디지털화 지원.</li>
+                            <li><strong>개도국 협력 확대:</strong> 디지털 인프라 격차 해소, 인적 자원 강화.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 LeeDonggyu. All Rights Reserved.</p>
+            <p class="mt-2 opacity-70">본 인포그래픽은 UNCTAD TRAINS 데이터베이스를 기반으로 제작되었습니다.</p>
+            <div class="mt-4 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
+                    보고서 원본 보기
+                </a>
+                <a href="https://leedonggyu-07.github.io/ntms/infographic.html" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
+                    발표자료 바로가기
+                </a>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <!-- 슬라이드 4: 국제 비교 -->
-    <section id="comparison" class="slide bg-white">
-        <div class="slide-content">
-            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 text-center mb-4"><span class="term-explainer" data-term="RCEP">RCEP</span> 참여국과 비교</h2>
-            <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto"><span class="term-explainer" data-term="범위비율">범위비율</span>(비관세조치의 영향을 받는 무역의 비율) 비교를 통해 역내에서 한국의 위상을 확인할 수 있습니다.</p>
-            <div class="card">
-                 <div class="flex flex-wrap justify-center gap-2 mb-6">
-                    <button class="filter-btn active px-4 py-2 rounded-full text-sm font-semibold" data-type="overall">종합</button>
-                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="tbt">TBT</button>
-                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="sps">SPS</button>
-                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="price">가격통제</button>
-                </div>
-                 <div class="chart-container comparison">
-                    <canvas id="rcepComparisonChart"></canvas>
-                </div>
-                 <p id="chart-description" class="text-center mt-4 text-slate-600 text-sm md:text-base">종합 <span class="term-explainer" data-term="범위비율">범위비율</span>에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- 슬라이드 5: 해외 대응 사례 -->
-    <section id="international-response" class="slide bg-gradient-light">
-        <div class="slide-content">
-            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 text-center mb-12">각국의 비관세조치 대응 방안</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="card">
-                    <h3 class="text-2xl font-bold text-blue-600 mb-4">다자 및 양자 무대</h3>
-                     <ul class="bullet-list space-y-3">
-                        <li><span class="term-explainer" data-term="WTO">WTO</span>(<span class="term-explainer" data-term="TBT">TBT</span> & <span class="term-explainer" data-term="SPS">SPS</span> 위원회)는 투명성 및 분쟁 해결의 핵심 플랫폼입니다.</li>
-                        <li>한국은 지난 3년간 <span class="term-explainer" data-term="WTO">WTO</span>에 46건의 <span class="term-explainer" data-term="STC">특정무역현안</span>을 제기하는 등 적극적인 참여자입니다.</li>
-                        <li><span class="term-explainer" data-term="CPTPP">CPTPP</span>와 같은 <span class="term-explainer" data-term="FTA">FTA</span>는 <span class="term-explainer" data-term="CTC">협력적 기술 협의</span>와 같은 더 강력한 규칙과 협의 절차를 도입합니다.</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3 class="text-2xl font-bold text-blue-600 mb-4">디지털 무역과 새로운 장벽</h3>
-                    <ul class="bullet-list space-y-3">
-                        <li>데이터 이전 제한 및 서버 현지화 요구는 새로운 디지털 장벽입니다.</li>
-                        <li><span class="term-explainer" data-term="USMCA">USMCA</span> 및 <span class="term-explainer" data-term="RCEP">RCEP</span>와 같은 협정은 디지털 무역 규칙을 다루지만 차이점이 남아 있습니다.</li>
-                        <li><span class="term-explainer" data-term="WTO">WTO</span> 협상(<span class="term-explainer" data-term="JSI">전자상거래 공동성명 이니셔티브</span>)은 데이터 프라이버시에 대한 견해 차이로 인해 어려움에 직면해 있습니다.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 슬라이드 6: 정책 제언 -->
-    <section id="policy" class="slide bg-white">
-        <div class="slide-content text-center">
-            <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-12">미래를 위한 정책 제언</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- 카드 1: 국내 역량 강화 -->
-                <div class="card text-center">
-                    <div class="icon-box">🏠</div>
-                    <h3 class="text-2xl font-bold mb-4 text-slate-800">국내 역량 강화</h3>
-                    <p class="text-slate-600">비관세조치 데이터베이스를 강화하고, 전문가를 양성하며, 통일된 대응 시스템을 위해 부처 간 협력을 강화합니다.</p>
-                </div>
-                <!-- 카드 2: 국제 협력 -->
-                <div class="card text-center">
-                    <div class="icon-box">🌍</div>
-                    <h3 class="text-2xl font-bold mb-4 text-slate-800">국제 협력</h3>
-                    <p class="text-slate-600"><span class="term-explainer" data-term="WTO">WTO</span> 분쟁 해결 메커니즘을 적극적으로 사용하고, 글로벌 표준 설정에 참여하며, 양자 및 다자 협의 채널을 활용합니다.</p>
-                </div>
-                <!-- 카드 3: 디지털 무역 대응 -->
-                <div class="card text-center">
-                     <div class="icon-box">💻</div>
-                    <h3 class="text-2xl font-bold mb-4 text-slate-800">디지털 무역</h3>
-                    <p class="text-slate-600">디지털 무역 규범에 대한 논의를 주도하고, 국내 정책의 일관성을 보장하며, 국내 산업의 디지털 전환을 지원합니다.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
-
-    <!-- 용어 정의를 위한 정보 모달 -->
-    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[100] hidden opacity-0" onclick="this.classList.add('hidden', 'opacity-0')">
-        <div id="modalContentContainer" class="p-8 rounded-2xl max-w-2xl w-11/12 max-h-[90vh] overflow-y-auto relative" onclick="event.stopPropagation()">
-            <button id="closeModal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 text-3xl font-bold">&times;</button>
-            <h3 id="modalTitle" class="text-2xl font-bold text-blue-600 mb-4"></h3>
-            <div id="modalContent" class="text-slate-700 leading-relaxed">
-                <!-- 정의가 여기에 로드됩니다 -->
+    <!-- Info Modal for term definitions -->
+    <div id="infoModal" class="info-modal-overlay">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-2xl w-11/12 max-h-[90vh] overflow-y-auto relative">
+            <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-4"></h3>
+            <div id="modalContent" class="text-gray-700 leading-relaxed">
+                <!-- Definition will be loaded here -->
             </div>
         </div>
     </div>
 
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" title="맨 위로 이동"></button>
+
     <script>
-        // 사전 정의된 용어 정의 (데이터 일관성을 위해 한국어로)
+        // Predefined term definitions
         const termDefinitions = {
             "신보호무역주의": "1970년대 이후 선진국을 중심으로 나타난 보호무역주의 형태로, 관세보다는 비관세조치(NTMs)를 주요 수단으로 활용하여 자국 산업 보호, 고용 유지, 국제수지 개선 등을 추구하는 경향. 과거 개발도상국의 유치 산업 보호와는 차이가 있습니다.",
             "글로벌 가치사슬": "제품이나 서비스가 생산되는 과정이 여러 국가에 걸쳐 분산되어 있는 국제적인 생산 네트워크. 기획, 연구개발, 생산, 유통, 마케팅, 판매 후 서비스 등 각 단계가 최적의 장소에서 이루어지며, 이를 통해 기업들은 효율성을 높이고 경쟁력을 확보합니다.",
@@ -348,201 +454,277 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main section');
+            // Removed navLinks as horizontal nav is gone
+            // const navLinks = document.querySelectorAll('.nav-link'); 
 
-            const textDark = '#1e293b';
-            const textLight = '#64748b';
-            const gridColor = 'rgba(0, 0, 0, 0.05)';
+            // Sidebar elements
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const closeSidebar = document.getElementById('close-sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav-link');
 
-            // NTM 유형 도넛 차트
-            const ntmTypeCtx = document.getElementById('ntmTypeChart')?.getContext('2d');
-            if (ntmTypeCtx) {
-                new Chart(ntmTypeCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['TBT (무역상기술장벽)', 'SPS (동식물위생검역)', '수출 관련', '가격 통제', '기타'],
-                        datasets: [{
-                            label: '유형별 비중',
-                            data: [41.9, 36.6, 15.9, 3.7, 1.9],
-                            backgroundColor: [
-                                'rgba(59, 130, 246, 0.8)',
-                                'rgba(16, 185, 129, 0.8)',
-                                'rgba(245, 158, 11, 0.8)',
-                                'rgba(239, 68, 68, 0.8)',
-                                'rgba(107, 114, 128, 0.8)'
-                            ],
-                            borderColor: 'white',
-                            borderWidth: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: textLight,
-                                    font: { size: 12, family: 'Noto Sans KR' }
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => `${context.label}: ${context.raw}%`
-                                }
-                            }
-                        }
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                sidebarOverlay.classList.remove('hidden');
+            }
+
+            function closeSidebarFn() {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+            }
+
+            // Event listeners for sidebar toggle
+            if (menuToggle) {
+                menuToggle.addEventListener('click', openSidebar);
+            }
+            if (closeSidebar) {
+                closeSidebar.addEventListener('click', closeSidebarFn);
+            }
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebarFn);
+            }
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', closeSidebarFn);
+            });
+
+
+            // updateActiveLink function is now simplified as horizontal nav is gone
+            function updateActiveLink() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                // Update sidebar nav links
+                sidebarNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
                     }
                 });
             }
 
-            // RCEP 비교 차트 (필터 기능 포함)
-            const rcepCtx = document.getElementById('rcepComparisonChart')?.getContext('2d');
-            if(rcepCtx) {
-                const rcepData = {
-                    labels: ['한국', '필리핀', '일본', '인도네시아', 'RCEP 평균'],
-                    datasets: {
-                        overall: [{
-                            label: '종합 범위비율 (%)',
-                            data: [39.6, 44.1, 33.7, 29.7, 26.6],
-                            backgroundColor: [
-                                'rgba(59, 130, 246, 0.7)',
-                                'rgba(107, 114, 128, 0.7)',
-                                'rgba(107, 114, 128, 0.7)',
-                                'rgba(107, 114, 128, 0.7)',
-                                'rgba(239, 68, 68, 0.7)'
-                            ],
-                            borderColor: [
-                                'rgba(59, 130, 246, 1)',
-                                'rgba(107, 114, 128, 1)',
-                                'rgba(107, 114, 128, 1)',
-                                'rgba(107, 114, 128, 1)',
-                                'rgba(239, 68, 68, 1)'
-                            ],
-                            borderWidth: 1
-                        }],
-                        tbt: [{
-                            label: 'TBT 범위비율 (%)',
-                            data: [86.2, 83.3, 72.6, 50.1, 62.6],
-                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 1
-                        }],
-                        sps: [{
-                            label: 'SPS 범위비율 (%)',
-                            data: [18.1, 13.9, 12.2, 19.5, 10.9],
-                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            borderWidth: 1
-                        }],
-                        price: [{
-                            label: '가격통제 범위비율 (%)',
-                            data: [76.9, 21.0, 56.8, 2.7, 20.3],
-                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
-                            borderColor: 'rgba(245, 158, 11, 1)',
-                            borderWidth: 1
-                        }]
-                    }
-                };
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink();
 
-                const rcepChart = new Chart(rcepCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: rcepData.labels,
-                        datasets: rcepData.datasets.overall
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                grid: { color: gridColor },
-                                ticks: { color: textLight, callback: (value) => value + '%' },
-                                title: { display: true, text: '범위비율 (%)', color: textDark, font: {size: 14, family: 'Noto Sans KR'} }
-                            },
-                            y: {
-                                grid: { display: false },
-                                ticks: { color: textDark, font: { size: 14, family: 'Noto Sans KR' } }
-                            }
+            // Accordion for UNCTAD NTM Classification
+            const ntmAccordionButton = document.querySelector('#ntm-accordion button');
+            if (ntmAccordionButton) {
+                ntmAccordionButton.addEventListener('click', () => {
+                    const content = ntmAccordionButton.nextElementSibling;
+                    const icon = ntmAccordionButton.querySelector('span:last-child');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            }
+
+
+            // Accordion for Python Code (This section is now removed from HTML as per request)
+            /*
+            const pythonCodeAccordionButton = document.querySelector('#python-code-accordion button');
+            if (pythonCodeAccordionButton) {
+                pythonCodeAccordionButton.addEventListener('click', () => {
+                    const content = pythonCodeAccordionButton.nextElementSibling;
+                    const icon = pythonCodeAccordionButton.querySelector('span:last-child');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            }
+            */
+
+
+            const ntmTypeCtx = document.getElementById('ntmTypeChart').getContext('2d');
+            new Chart(ntmTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['TBT (무역상기술장벽)', 'SPS (동식물위생검역)', '수출 관련', '가격 통제', '기타'],
+                    datasets: [{
+                        label: '유형별 비중',
+                        data: [41.9, 36.6, 15.9, 3.7, 1.9],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(107, 114, 128, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(107, 114, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
                         },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: (context) => `${context.dataset.label}: ${context.raw}%`
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
                                 }
                             }
                         }
                     }
-                });
-
-                const filterButtons = document.querySelectorAll('.filter-btn');
-                const chartDescription = document.getElementById('chart-description');
-                const descriptions = {
-                    overall: "종합 범위비율에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.",
-                    tbt: "TBT(무역상기술장벽)에서는 한국(86.2%)이 RCEP 국가 중 압도적으로 가장 높은 영향력을 보입니다.",
-                    sps: "SPS(동식물위생검역)에서는 한국(18.1%)이 인도네시아에 이어 두 번째로 높은 수준입니다.",
-                    price: "가격통제조치에서는 한국(76.9%)이 RCEP 평균(20.3%)을 크게 상회하며 독보적인 1위를 차지합니다."
-                }
-
-                filterButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const type = button.dataset.type;
-                        rcepChart.data.datasets = rcepData.datasets[type];
-                        rcepChart.update();
-
-                        chartDescription.innerHTML = descriptions[type].replace(/(\d+\.?\d*%)/g, '<strong>$1</strong>')
-                            .replace(/(한국|필리핀|일본|인도네시아)/g, '<span class="text-blue-600 font-semibold">$1</span>')
-                            .replace(/(TBT|SPS|가격통제조치|범위비율)/g, '<span class="term-explainer" data-term="$1">$1</span>');
-
-                        filterButtons.forEach(btn => {
-                            btn.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg');
-                            btn.classList.add('bg-slate-100', 'text-slate-700');
-                        });
-                        button.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
-                        button.classList.remove('bg-slate-100', 'text-slate-700');
-                    });
-                });
-            }
-
-
-            // 용어 설명 기능
-            const termExplainers = document.querySelectorAll('.term-explainer');
-            const infoModal = document.getElementById('infoModal');
-            const closeModalButton = document.getElementById('closeModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-
-            const openModal = (term) => {
-                const definition = termDefinitions[term];
-                if (definition) {
-                    modalTitle.textContent = `용어 설명: ${term}`;
-                    modalContent.innerHTML = `<p>${definition}</p>`;
-                    infoModal.classList.remove('hidden');
-                    // 페이드인 트리거
-                    setTimeout(() => infoModal.classList.remove('opacity-0'), 10);
-                }
-            };
-            
-            const closeModal = () => {
-                infoModal.classList.add('opacity-0');
-                // 전환 후 숨기기
-                setTimeout(() => infoModal.classList.add('hidden'), 300);
-            };
-
-            document.body.addEventListener('click', (e) => {
-                if (e.target.classList.contains('term-explainer')) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const term = e.target.dataset.term;
-                    openModal(term);
                 }
             });
 
-            closeModalButton.addEventListener('click', closeModal);
-            infoModal.addEventListener('click', closeModal);
+            const rcepData = {
+                labels: ['한국', '필리핀', '일본', '인도네시아', 'RCEP 평균'],
+                datasets: {
+                    overall: [{
+                        label: '종합 범위비율 (%)',
+                        data: [39.6, 44.1, 33.7, 29.7, 26.6],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)', /* 한국 */
+                            'rgba(245, 158, 11, 0.6)', /* 필리핀 */
+                            'rgba(16, 185, 129, 0.6)', /* 일본 */
+                            'rgba(239, 68, 68, 0.6)', /* 인도네시아 */
+                            'rgba(107, 114, 128, 0.6)' /* RCEP 평균 */
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(107, 114, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    tbt: [{
+                        label: 'TBT 범위비율 (%)',
+                        data: [86.2, 83.3, 72.6, 50.1, 62.6],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(245, 158, 11, 0.6)',
+                            'rgba(16, 185, 129, 0.6)',
+                            'rgba(239, 68, 68, 0.6)',
+                            'rgba(107, 114, 128, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(107, 114, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    sps: [{
+                        label: 'SPS 범위비율 (%)',
+                        data: [18.1, 13.9, 12.2, 19.5, 10.9],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(245, 158, 11, 0.6)',
+                            'rgba(16, 185, 129, 0.6)',
+                            'rgba(239, 68, 68, 0.6)',
+                            'rgba(107, 114, 128, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(107, 114, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }],
+                    price: [{
+                        label: '가격통제 범위비율 (%)',
+                        data: [76.9, 21.0, 56.8, 2.7, 20.3],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(245, 158, 11, 0.6)',
+                            'rgba(16, 185, 129, 0.6)',
+                            'rgba(239, 68, 68, 0.6)',
+                            'rgba(107, 114, 128, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(107, 114, 128, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            };
 
+            const rcepCtx = document.getElementById('rcepComparisonChart').getContext('2d');
+            const rcepChart = new Chart(rcepCtx, {
+                type: 'bar',
+                data: {
+                    labels: rcepData.labels,
+                    datasets: rcepData.datasets.overall
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '범위비율 (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const chartDescription = document.getElementById('chart-description');
+            const descriptions = {
+                overall: "종합 범위비율에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.",
+                tbt: "TBT(무역상기술장벽)에서는 한국(86.2%)이 RCEP 국가 중 압도적으로 가장 높은 영향력을 보입니다.",
+                sps: "SPS(동식물위생검역)에서는 한국(18.1%)이 인도네시아에 이어 두 번째로 높은 수준입니다.",
+                price: "가격통제조치에서는 한국(76.9%)이 RCEP 평균(20.3%)을 크게 상회하며 독보적인 1위를 차지합니다."
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.type;
+                    rcepChart.data.datasets = rcepData.datasets[type];
+                    rcepChart.update();
+
+                    chartDescription.textContent = descriptions[type];
+                    
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-[#1976D2]', 'text-white', 'shadow');
+                        btn.classList.add('bg-gray-100', 'text-gray-700');
+                    });
+                    button.classList.add('active', 'bg-[#1976D2]', 'text-white', 'shadow');
+                    button.classList.remove('bg-gray-100', 'text-gray-700');
+                });
+            });
         });
     </script>
 </body>
