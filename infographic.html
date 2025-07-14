@@ -17,6 +17,7 @@
             scroll-behavior: smooth;
             background-color: #E3F2FD; /* Light blue background for overall page */
             color: #333; /* Darker text for readability */
+            overflow-x: hidden; /* Prevent horizontal scroll due to AOS animations */
         }
         /* Custom gradient backgrounds for sections */
         .section-gradient-bg-1 {
@@ -100,7 +101,7 @@
         }
 
         /* Modal specific styles for display control */
-        .info-modal-overlay {
+        .info-modal-overlay, .image-popup-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -116,16 +117,16 @@
             transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out; /* Slower transition */
         }
 
-        .info-modal-overlay.active {
+        .info-modal-overlay.active, .image-popup-overlay.active {
             display: flex;
             opacity: 1;
             visibility: visible;
         }
-        .info-modal-overlay > div {
+        .info-modal-overlay > div, .image-popup-overlay > div {
             transform: translateY(20px); /* Initial slight drop effect */
             transition: transform 0.4s ease-out;
         }
-        .info-modal-overlay.active > div {
+        .info-modal-overlay.active > div, .image-popup-overlay.active > div {
             transform: translateY(0);
         }
 
@@ -144,9 +145,57 @@
             background-color: #E3F2FD; /* Lighter hover for inactive */
             color: #1976D2;
         }
+
+        /* Image popup specific styles */
+        .image-popup-content {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            max-height: 90%;
+            overflow: hidden; /* Ensure image doesn't overflow */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-popup-content img {
+            max-width: 100%;
+            max-height: 80vh; /* Adjust as needed */
+            height: auto;
+            display: block;
+            border-radius: 0.5rem;
+        }
+        .image-popup-close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+        .image-popup-close-btn:hover {
+            color: #333;
+        }
     </style>
 </head>
 <body class="bg-[#E3F2FD] text-gray-800">
+
+    <!-- Image Popup Modal -->
+    <div id="imagePopup" class="image-popup-overlay active">
+        <div class="image-popup-content">
+            <button id="closeImagePopup" class="image-popup-close-btn">&times;</button>
+            <img src="http://googleusercontent.com/file_content/1" alt="QR Code" onerror="this.onerror=null;this.src='https://i.ibb.co/V03h3k5K/qrcode.jpg';" />
+            <p class="mt-4 text-center text-gray-700">추가 정보를 확인하려면 QR 코드를 스캔하세요.</p>
+        </div>
+    </div>
 
     <div class="min-h-screen bg-gradient-to-b from-[#E3F2FD] to-white">
         <!-- Main content area -->
@@ -458,16 +507,46 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize AOS
-            AOS.init({
-                offset: 120, // offset (in px) from the original trigger point
-                delay: 0, // values from 0 to 3000, with step 50ms
-                duration: 800, // values from 0 to 3000, with step 50ms
-                easing: 'ease-in-out', // default easing for AOS animations
-                once: false, // whether animation should happen only once - while scrolling down
-                mirror: true, // whether elements should animate out while scrolling past them
-                anchorPlacement: 'top-bottom', // defines which position of the element should trigger the animation
+            // Get image popup elements
+            const imagePopup = document.getElementById('imagePopup');
+            const closeImagePopupBtn = document.getElementById('closeImagePopup');
+
+            // Function to initialize AOS
+            const initializeAOS = () => {
+                AOS.init({
+                    offset: 120, // offset (in px) from the original trigger point
+                    delay: 0, // values from 0 to 3000, with step 50ms
+                    duration: 800, // values from 0 to 3000, with step 50ms
+                    easing: 'ease-in-out', // default easing for AOS animations
+                    once: false, // whether animation should happen only once - while scrolling down
+                    mirror: true, // whether elements should animate out while scrolling past them
+                    anchorPlacement: 'top-bottom', // defines which position of the element should trigger the animation
+                });
+            };
+
+            // Show image popup immediately on page load
+            imagePopup.classList.add('active');
+
+            // Close image popup and start animations when 'X' is clicked
+            closeImagePopupBtn.addEventListener('click', () => {
+                imagePopup.classList.remove('active');
+                // Remove the popup from the DOM after transition for cleaner HTML
+                imagePopup.addEventListener('transitionend', () => {
+                    imagePopup.remove();
+                }, { once: true });
+                initializeAOS(); // Start AOS animations after closing the popup
             });
+
+            // Prevent body scrolling when image popup is active
+            if (imagePopup.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            }
+            imagePopup.addEventListener('transitionend', () => {
+                if (!imagePopup.classList.contains('active')) {
+                    document.body.style.overflow = '';
+                }
+            });
+
 
             // 용어 설명 모달 관련 요소 가져오기
             const infoModal = document.getElementById('infoModal');
@@ -484,6 +563,7 @@
                         modalTitle.textContent = term;
                         modalContent.innerHTML = `<p>${termDefinitions[term]}</p>`; // p 태그로 감싸서 내용 추가
                         infoModal.classList.add('active'); // 모달 활성화
+                        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
                     } else {
                         console.warn(`Definition not found for term: ${term}`);
                     }
@@ -492,12 +572,14 @@
 
             closeModalBtn.addEventListener('click', () => {
                 infoModal.classList.remove('active'); // 모달 비활성화
+                document.body.style.overflow = ''; // Restore scrolling
             });
 
             // 모달 외부 클릭 시 닫기
             infoModal.addEventListener('click', (e) => {
                 if (e.target === infoModal) {
                     infoModal.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scrolling
                 }
             });
             // --- 용어 설명 모달 기능 추가 끝 ---
