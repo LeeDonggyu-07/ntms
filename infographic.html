@@ -104,6 +104,13 @@
             height: 100%;
             min-height: 300px;
         }
+        
+        @media (min-width: 768px) {
+            .chart-container.comparison {
+                height: 500px;
+            }
+        }
+
 
         /* 사용자 정의 글머리 기호 목록 스타일 */
         .bullet-list li {
@@ -149,6 +156,16 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             color: #1e293b;
         }
+
+        /* 필터 버튼 스타일 */
+        .filter-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .filter-btn.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
     </style>
 </head>
 <body class="text-slate-800">
@@ -157,11 +174,12 @@
     <!-- 슬라이드 1: 제목 -->
     <section id="hero" class="slide bg-gradient-light">
         <div class="slide-content text-center">
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-tight">
-                <span class="text-gradient">신보호무역주의</span> 시대
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">
+                <span class="block text-slate-900">신보호무역주의 시대</span>
+                <span class="block text-gradient mt-2">비관세조치의 영향과 대응</span>
             </h1>
-            <p class="mt-6 max-w-3xl mx-auto text-xl md:text-2xl text-slate-600">
-                <span class="term-explainer" data-term="비관세조치">비관세조치</span>(NTMs)의 영향과 대응에 대한 심층 분석
+            <p class="mt-8 max-w-3xl mx-auto text-lg md:text-xl text-slate-600">
+                <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> 데이터를 통해 한국의 비관세조치 현황을 심층 분석하고, 글로벌 무역 환경 변화에 따른 정책적 방향성을 제시합니다.
             </p>
             <div class="mt-12">
                 <div class="inline-block bg-white border border-slate-200 rounded-full px-8 py-6 shadow-lg">
@@ -205,7 +223,7 @@
             <h2 class="text-4xl md:text-5xl font-bold text-slate-900 text-center mb-12">한국의 비관세조치 현황 분석</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div class="card h-full">
-                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-800">유형별 비관세조치 (건수 기준)</h3>
+                    <h3 class="text-2xl font-bold text-center mb-4 text-slate-800">유형별 비중 (건수 기준)</h3>
                     <div class="chart-container h-[400px]">
                         <canvas id="ntmTypeChart"></canvas>
                     </div>
@@ -230,11 +248,17 @@
             <h2 class="text-4xl md:text-5xl font-bold text-slate-900 text-center mb-4"><span class="term-explainer" data-term="RCEP">RCEP</span> 참여국과 비교</h2>
             <p class="text-center text-slate-500 mb-8 max-w-3xl mx-auto"><span class="term-explainer" data-term="범위비율">범위비율</span>(비관세조치의 영향을 받는 무역의 비율) 비교를 통해 역내에서 한국의 위상을 확인할 수 있습니다.</p>
             <div class="card">
-                 <div class="chart-container h-[500px]">
+                 <div class="flex flex-wrap justify-center gap-2 mb-6">
+                    <button class="filter-btn active px-4 py-2 rounded-full text-sm font-semibold" data-type="overall">종합</button>
+                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="tbt">TBT</button>
+                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="sps">SPS</button>
+                    <button class="filter-btn bg-slate-100 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold border border-slate-200" data-type="price">가격통제</button>
+                </div>
+                 <div class="chart-container comparison">
                     <canvas id="rcepComparisonChart"></canvas>
                 </div>
+                 <p id="chart-description" class="text-center mt-4 text-slate-600 text-sm md:text-base">종합 <span class="term-explainer" data-term="범위비율">범위비율</span>에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.</p>
             </div>
-             <p class="text-center mt-4 text-slate-600">한국의 전반적인 비관세조치 영향은 광범위한 <span class="term-explainer" data-term="TBT">TBT</span> 및 가격 통제 조치 사용으로 인해 RCEP에서 가장 높은 수준 중 하나입니다.</p>
         </div>
     </section>
 
@@ -339,7 +363,13 @@
                         datasets: [{
                             label: '유형별 비중',
                             data: [41.9, 36.6, 15.9, 3.7, 1.9],
-                            backgroundColor: ['#3b82f6', '#16a34a', '#f97316', '#ef4444', '#64748b'],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(107, 114, 128, 0.8)'
+                            ],
                             borderColor: 'white',
                             borderWidth: 4
                         }]
@@ -365,63 +395,80 @@
                 });
             }
 
-            // RCEP 비교 누적 막대 차트
+            // RCEP 비교 차트 (필터 기능 포함)
             const rcepCtx = document.getElementById('rcepComparisonChart')?.getContext('2d');
-            if (rcepCtx) {
-                new Chart(rcepCtx, {
+            if(rcepCtx) {
+                const rcepData = {
+                    labels: ['한국', '필리핀', '일본', '인도네시아', 'RCEP 평균'],
+                    datasets: {
+                        overall: [{
+                            label: '종합 범위비율 (%)',
+                            data: [39.6, 44.1, 33.7, 29.7, 26.6],
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.7)',
+                                'rgba(107, 114, 128, 0.7)',
+                                'rgba(107, 114, 128, 0.7)',
+                                'rgba(107, 114, 128, 0.7)',
+                                'rgba(239, 68, 68, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(59, 130, 246, 1)',
+                                'rgba(107, 114, 128, 1)',
+                                'rgba(107, 114, 128, 1)',
+                                'rgba(107, 114, 128, 1)',
+                                'rgba(239, 68, 68, 1)'
+                            ],
+                            borderWidth: 1
+                        }],
+                        tbt: [{
+                            label: 'TBT 범위비율 (%)',
+                            data: [86.2, 83.3, 72.6, 50.1, 62.6],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        }],
+                        sps: [{
+                            label: 'SPS 범위비율 (%)',
+                            data: [18.1, 13.9, 12.2, 19.5, 10.9],
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        }],
+                        price: [{
+                            label: '가격통제 범위비율 (%)',
+                            data: [76.9, 21.0, 56.8, 2.7, 20.3],
+                            backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                            borderColor: 'rgba(245, 158, 11, 1)',
+                            borderWidth: 1
+                        }]
+                    }
+                };
+
+                const rcepChart = new Chart(rcepCtx, {
                     type: 'bar',
                     data: {
-                        labels: ['필리핀', '한국', '일본', '인도네시아', '호주', '뉴질랜드', 'RCEP 평균'],
-                        datasets: [
-                            {
-                                label: 'TBT 범위비율 (%)',
-                                data: [83.3, 86.2, 72.6, 50.1, 76.7, 56.4, 62.6],
-                                backgroundColor: 'rgba(59, 130, 246, 0.7)', // 블루 500
-                                borderWidth: 1,
-                                stack: 'Stack 0',
-                            },
-                            {
-                                label: 'SPS 범위비율 (%)',
-                                data: [13.9, 18.1, 12.2, 19.5, 13.9, 16.6, 10.9],
-                                backgroundColor: 'rgba(22, 163, 74, 0.7)', // 그린 600
-                                borderWidth: 1,
-                                stack: 'Stack 0',
-                            },
-                             {
-                                label: '가격통제 범위비율 (%)',
-                                data: [21.0, 76.9, 56.8, 2.7, 22.3, 0, 20.3],
-                                backgroundColor: 'rgba(249, 115, 22, 0.7)', // 오렌지 500
-                                borderWidth: 1,
-                                stack: 'Stack 0',
-                            }
-                        ]
+                        labels: rcepData.labels,
+                        datasets: rcepData.datasets.overall
                     },
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'y',
                         scales: {
                             x: {
-                                stacked: true,
                                 beginAtZero: true,
                                 grid: { color: gridColor },
                                 ticks: { color: textLight, callback: (value) => value + '%' },
                                 title: { display: true, text: '범위비율 (%)', color: textDark, font: {size: 14, family: 'Noto Sans KR'} }
                             },
                             y: {
-                                stacked: true,
                                 grid: { display: false },
                                 ticks: { color: textDark, font: { size: 14, family: 'Noto Sans KR' } }
                             }
                         },
                         plugins: {
-                            legend: {
-                                position: 'top',
-                                labels: { color: textDark, font: {family: 'Noto Sans KR'} }
-                            },
+                            legend: { display: false },
                             tooltip: {
-                                mode: 'index',
-                                intersect: false,
                                 callbacks: {
                                     label: (context) => `${context.dataset.label}: ${context.raw}%`
                                 }
@@ -429,7 +476,36 @@
                         }
                     }
                 });
+
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                const chartDescription = document.getElementById('chart-description');
+                const descriptions = {
+                    overall: "종합 범위비율에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.",
+                    tbt: "TBT(무역상기술장벽)에서는 한국(86.2%)이 RCEP 국가 중 압도적으로 가장 높은 영향력을 보입니다.",
+                    sps: "SPS(동식물위생검역)에서는 한국(18.1%)이 인도네시아에 이어 두 번째로 높은 수준입니다.",
+                    price: "가격통제조치에서는 한국(76.9%)이 RCEP 평균(20.3%)을 크게 상회하며 독보적인 1위를 차지합니다."
+                }
+
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const type = button.dataset.type;
+                        rcepChart.data.datasets = rcepData.datasets[type];
+                        rcepChart.update();
+
+                        chartDescription.innerHTML = descriptions[type].replace(/(\d+\.?\d*%)/g, '<strong>$1</strong>')
+                            .replace(/(한국|필리핀|일본|인도네시아)/g, '<span class="text-blue-600 font-semibold">$1</span>')
+                            .replace(/(TBT|SPS|가격통제조치|범위비율)/g, '<span class="term-explainer" data-term="$1">$1</span>');
+
+                        filterButtons.forEach(btn => {
+                            btn.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                            btn.classList.add('bg-slate-100', 'text-slate-700');
+                        });
+                        button.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                        button.classList.remove('bg-slate-100', 'text-slate-700');
+                    });
+                });
             }
+
 
             // 용어 설명 기능
             const termExplainers = document.querySelectorAll('.term-explainer');
@@ -455,13 +531,13 @@
                 setTimeout(() => infoModal.classList.add('hidden'), 300);
             };
 
-            termExplainers.forEach(explainer => {
-                explainer.addEventListener('click', (e) => {
+            document.body.addEventListener('click', (e) => {
+                if (e.target.classList.contains('term-explainer')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const term = explainer.dataset.term;
+                    const term = e.target.dataset.term;
                     openModal(term);
-                });
+                }
             });
 
             closeModalButton.addEventListener('click', closeModal);
