@@ -29,15 +29,6 @@
                 max-height: 50vh;
             }
         }
-        .nav-link {
-            transition: all 0.3s ease;
-            white-space: nowrap; /* Prevent text wrapping */
-        }
-        .nav-link.active {
-            color: #1976D2; /* Primary Blue */
-            font-weight: 700;
-            transform: scale(1.1);
-        }
         .section-heading-box {
             background-color: #1976D2; /* Primary Blue for strong background */
             color: white; /* White text for contrast */
@@ -68,7 +59,6 @@
             text-decoration: underline;
             color: #1976D2; /* Subtle hover effect with primary blue */
         }
-        /* Style for the code block (removed as per request) */
         /* Scroll-to-top button styles */
         #scrollToTopBtn {
             display: none; /* Hidden by default */
@@ -111,48 +101,7 @@
 <body class="bg-[#E3F2FD] text-gray-800">
 
     <div class="min-h-screen bg-gradient-to-b from-[#E3F2FD] to-white">
-        <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-50 shadow-sm">
-            <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <!-- Hamburger Icon (visible on small screens) -->
-                <button id="menu-toggle" class="p-2 rounded-full md:hidden flex-shrink-0">
-                    <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
-                    <span class="block w-6 h-0.5 bg-gray-600 mb-1"></span>
-                    <span class="block w-6 h-0.5 bg-gray-600"></span>
-                </button>
-                <!-- Title -->
-                <h1 id="main-header-title" class="flex-grow text-base sm:text-lg font-bold text-[#1976D2] whitespace-nowrap text-center cursor-pointer md:text-left md:text-xl md:flex-grow-0">
-                    비관세조치의 영향과 대응
-                </h1>
-                <!-- Horizontal Navigation (hidden on mobile, visible on desktop) -->
-                <div class="hidden md:flex items-baseline space-x-4">
-                    <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#1976D2] hover:bg-gray-100">개요 및 이론</a>
-                    <a href="#korea-analysis" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#1976D2] hover:bg-gray-100">한국 현황 분석</a>
-                    <a href="#comparison" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#1976D2] hover:bg-gray-100">국제 비교</a>
-                    <a href="#international-response" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#1976D2] hover:bg-gray-100">해외 대응 사례</a>
-                    <a href="#policy" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#1976D2] hover:bg-gray-100">정책 제언</a>
-                </div>
-            </nav>
-        </header>
-
-        <!-- Slide-out Sidebar -->
-        <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 text-white transform -translate-x-full transition-transform duration-300 ease-in-out z-40 p-6 flex flex-col">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-xl font-bold text-blue-300">메뉴</h2>
-                <button id="close-sidebar" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <nav class="flex flex-col space-y-4">
-                <a href="#overview" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">개요 및 이론</a>
-                <a href="#korea-analysis" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">한국 현황 분석</a>
-                <a href="#comparison" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">국제 비교</a>
-                <a href="#international-response" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">해외 대응 사례</a>
-                <a href="#policy" class="sidebar-nav-link text-lg text-gray-300 hover:text-white hover:font-bold">정책 제언</a>
-            </nav>
-        </aside>
-
-        <!-- Overlay for when sidebar is open -->
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
-
-        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
             
             <section id="hero" class="text-center py-16 md:py-24 bg-gradient-to-br from-[#E3F2FD] to-white rounded-lg shadow-xl min-h-screen flex flex-col justify-center">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-[#0D47A1] tracking-tighter leading-tight drop-shadow-md">
@@ -313,7 +262,7 @@
                     <div class="chart-container h-96 md:h-[500px] max-h-[60vh]">
                         <canvas id="rcepComparisonChart"></canvas>
                     </div>
-                    <p id="chart-description" class="text-center mt-4 text-gray-700 text-base md:text-lg font-medium">종합 <span class="term-explainer" data-term="범위비율">범위비율</span>에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다.</p>
+                    <p id="chart-description" class="text-center mt-4 text-gray-700 text-base md:text-lg font-medium">종합 <span class="term-explainer" data-term="범위비율">범위비율</span>에서 한국(39.6%)은 필리핀에 이어 두 번째로 높은 수준을 보입니다。</p>
                 </div>
 
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 mt-12">
@@ -413,13 +362,13 @@
     <footer class="bg-gray-800 text-white">
         <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
             <p>&copy; 2025 LeeDonggyu. All Rights Reserved.</p>
-            <p class="mt-2 opacity-70">본 인포그래픽은 <span class="term-explainer" data-term="UNCTAD">UNCTAD</span> TRAINS 데이터베이스를 기반으로 제작되었습니다.</p>
+            <p class="mt-2 opacity-70">본 인포그래픽은 UNCTAD TRAINS 데이터베이스를 기반으로 제작되었습니다.</p>
             <div class="mt-4 flex flex-col sm:flex-row justify-center items-center gap-4">
                 <a href="https://drive.google.com/file/d/11cZR4M9ocxiw-VogJozJisWNU8sjWeiT/view?usp=drive_link" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
                     보고서 원본 보기
                 </a>
-                <a href="https://leedonggyu-07.github.io/ntms/report.html" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
-                    리포트 바로가기
+                <a href="https://leedonggyu-07.github.io/ntms/infographic.html" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-gray-100 shadow-sm">
+                    발표자료 바로가기
                 </a>
             </div>
         </div>
@@ -507,6 +456,7 @@
                     }
                 });
 
+                // Since there's no horizontal nav on infographic, these won't do anything
                 navLinks.forEach(link => {
                     link.classList.remove('active');
                     if (link.getAttribute('href').includes(current)) {
@@ -733,61 +683,6 @@
                     button.classList.add('active', 'bg-blue-600', 'text-white');
                     button.classList.remove('bg-white', 'text-gray-700', 'border');
                 });
-            });
-
-            // Term Explainer Functionality
-            const termExplainers = document.querySelectorAll('.term-explainer');
-            const infoModal = document.getElementById('infoModal');
-            const closeModalButton = document.getElementById('closeModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-
-            termExplainers.forEach(explainer => {
-                explainer.addEventListener('click', () => {
-                    const term = explainer.dataset.term;
-                    const definition = termDefinitions[term];
-                    if (definition) {
-                        modalTitle.textContent = `'${term}' 용어 설명`;
-                        modalContent.innerHTML = `<p>${definition}</p>`;
-                        infoModal.classList.remove('hidden');
-                    } else {
-                        // Fallback if definition not found (shouldn't happen with predefined terms)
-                        modalTitle.textContent = '오류';
-                        modalContent.innerHTML = `<p class="text-red-500">용어 설명을 찾을 수 없습니다.</p>`;
-                        infoModal.classList.remove('hidden');
-                    }
-                });
-            });
-
-            closeModalButton.addEventListener('click', () => {
-                infoModal.classList.add('hidden');
-            });
-
-            infoModal.addEventListener('click', (e) => {
-                if (e.target === infoModal) {
-                    infoModal.classList.add('hidden');
-                }
-            });
-
-            // Scroll to Top Button functionality
-            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-            const mainHeaderTitle = document.getElementById('main-header-title'); // Get the main header title
-
-            window.onscroll = function() {
-                if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-                    scrollToTopBtn.style.display = "block";
-                } else {
-                    scrollToTopBtn.style.display = "none";
-                }
-            };
-
-            scrollToTopBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // Add click event to main header title
-            mainHeaderTitle.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>
